@@ -77,7 +77,7 @@ public:
 	Time getMT();
 
 	//calculates the time until Mt in hours 
-	void CalculateTimeUntilMoving(const Time& currtime);
+	void CalculateTimeUntilMoving();
 
 	//getter
 	int getTimeUntilMoving();

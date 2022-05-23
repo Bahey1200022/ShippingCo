@@ -40,3 +40,13 @@ void cargo::calcP() { p = Cost / (dist + LT); }
 Time cargo::getpt() { return PT; }
 
 int cargo::getdist() { return dist; }
+
+int cargo::getwt(Time c) {
+
+	int d1 = c.getDays();
+	int h1 = c.gethour();
+	int d2 = PT.getDays();
+	int h2 = PT.gethour();
+	
+	return (d1 - d2) * 24 + h1 - h2;
+}

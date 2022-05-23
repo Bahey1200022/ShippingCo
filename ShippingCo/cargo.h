@@ -34,6 +34,7 @@ class cargo
 	Time CDT;
 	//calculate cargo Delivery Time
 	void calcCDT();
+	int wt; //hours of wait
 
 public:
 	//constructors
@@ -46,7 +47,7 @@ public:
 	int getID();
 	int getcost();
 	int getlt();
-
+	int getwt(Time c);
 	truck* gettruck();
 
 	Time getpt();

@@ -29,7 +29,7 @@ private:
 	int autoplimit, maxW;
 
 
-	int totalcargos;
+	int totalcargos;//IMPORTANT output file
 	int numcspecial, numcVIP, numcnorm;//total no.s of each type of cargos
 	int mnumspecial, mnumcVIP, mnumcnorm;//moving cargos
 	int  wnumcspecial, wnumcVIP, wnumcnorm; //waiting cargos
@@ -145,6 +145,9 @@ public:
 
 	//Delivering cargos function
 	void Deliver();
+
+	//move trucks to cheuck up
+	//void tocheckup(); Do we need it ??
 
 	//printing functions
 	void PrintWaitingCargos();

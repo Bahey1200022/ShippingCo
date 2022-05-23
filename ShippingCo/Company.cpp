@@ -311,6 +311,7 @@ void Company::autopromotion() { /// autop days after a cargo is waiting then pro
 			vipcargos.enqueueDesc(l, l->getP());
 			numcnorm--;numcVIP++;
 			autopromotedcargos++;
+		
 		}
 		else c = c->getNext();
 	}
@@ -386,10 +387,10 @@ bool Company::noavailabletruck() {
 }
 
 void Company::assigncargototruck() {
-
-	//truckscheckup();
-
-	//autopromotion();
+	//handle wether it's time for the trucks to get out 
+	truckscheckup();
+	//auto promote cargos after autop 
+	autopromotion();
 	//checkss if company is in its working hours
 	if (currtime.gethour() > 5 && currtime.gethour() < 23)
 	{
@@ -461,6 +462,9 @@ void Company::assigncargototruck() {
 				else if (!sptrucks.Isempty())
 				{
 					//checks if the ready cargos are equal or more than the truck's capacity
+					
+
+
 					if (vipcargos.size() >= casp)
 					{
 						///loading rule
@@ -501,8 +505,10 @@ void Company::assigncargototruck() {
 				//checks if there is an available special truck
 				if (!sptrucks.Isempty())
 				{
+					cargo* h;spcargos.peek(h);
+					
 					//checks if no of special cargos is equal or more than the truck's capacity
-					if (spcargos.getsize() >= casp)
+					  if (spcargos.getsize() >= casp)
 					{
 						truck* t;
 						//removes a special truck from the available trucks list
@@ -524,6 +530,29 @@ void Company::assigncargototruck() {
 
 
 					}
+					  //maxw 
+					  //cargo* h;spcargos.peek(h);
+					  else if (h->getwt(currtime) >= maxW) {
+						  truck* t;
+						  //removes a special truck from the available trucks list
+						  sptrucks.dequeue(t);
+						  
+						  //removes the cargo from the ready list
+						  
+						  while (h->getwt(currtime) >= maxW)
+						  {
+							  spcargos.dequeue(h);
+							  t->assigncargo(h);
+							  //insert the truck into the loading truck list
+							  t->setloadentry(currtime);
+							  //calculates the tuck's moving time
+							  t->CalculateMovingTime();
+							  //inserts the truck in the loading trucks 
+							  loadingtrucks.enqueueAsc(t, t->getTimeUntilMoving());
+							  if (!spcargos.peek(h)) break;
+						  }
+
+					  }
 
 				}
 			}
@@ -639,6 +668,13 @@ void Company::Deliver()
 }
 
 
+
+
+
+
+
+
+///////////////////////////////////////printing ////////////////////////////////////////////////////////
 void Company::PrintWaitingCargos()
 {
 	int TotalWaitingCargos; //total waiting cargos

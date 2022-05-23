@@ -107,14 +107,14 @@ Time truck::getMT() {
 
 }
 
-void truck::CalculateTimeUntilMoving(const Time& currtime)
+void truck::CalculateTimeUntilMoving()
 {
 	//truck's moving time
 	int d1 = MT.getDays();
 	int h1 = MT.gethour();
 	//passed object days and hours
-	int d2 = currtime.getDays();
-	int h2 = currtime.gethour();
+	int d2 = loadingentry.getDays();
+	int h2 = loadingentry.gethour();
 	//in hours
 	TimeUntilMoving = (d1 - d2) * 24 + (h1 - h2);
 }
@@ -123,8 +123,9 @@ void truck::CalculateTimeUntilMoving(const Time& currtime)
 
 int truck::getTimeUntilMoving()
 {
+	CalculateTimeUntilMoving();
 	return TimeUntilMoving;
-	return 0;
+	
 }
 
 Time truck::getloadentry() {
