@@ -22,24 +22,34 @@ class truck
 	int checkupt;
 	//truck's speed
 	int speed;
+
 	char truckstatus;
+
 	//cargos assigned to the truck
-	PriQueue<cargo*>cargosassigned;
+	PriQueue<cargo*, int>cargosassigned;
+
+
 	//num of journeys before checkup
 	int J;
 	//num of journeys the truck performed
 	int journeys;
+
 	//moving time
 	Time MT;
+
 	//Time between the current time and moving time(used in the loading trucks priority queue)
 	int TimeUntilMoving;
+
 	//time the truck entered checkUp
 	Time checkupentry;
+
 	//the time at which the truck enters the loading queue
 	Time loadingentry;
 
+	Time Di;
 	//the total loading time of the assigned carrgos
 	int sumlt;
+
 public:
 	//constructors
 	truck();
@@ -50,7 +60,8 @@ public:
 	//resets journeys back to zero
 	void resetj();
 
-	PriQueue<cargo*> getcargos();
+	///
+	PriQueue<cargo*, int> getcargos();
 
 	int getcheckupt();
 
@@ -67,8 +78,28 @@ public:
 	//assigns a cargo to the truck
 	void assigncargo(cargo* c);
 
-	//calc delivery interval
-	int DI();
+
+	//reruens a pointer to the first cargo in the pQueue(utility fn)
+	cargo* getFirstCargo();
+
+
+	//reruens a pointer to the first cargo in the pQueue(utility fn)
+	int getFurtherestCargoDist();
+
+	//Removes the 1st cargo in the queue
+	bool DeliverCargo(cargo*& DeliveredCargo);
+
+	//calculates the CDT for the first cargo in the pQueue
+	void caculateCDt();
+
+	//gets the CDT of the first crago in the truck pQueue
+	Time getCDT();
+
+	//calc delivery interval and returns it
+	void DI(Time);
+
+	int gettotalj();
+	int getj();
 
 	//calculates the time at which a truck will start moving to deliver the cargos 
 	void CalculateMovingTime();
@@ -77,13 +108,17 @@ public:
 	Time getMT();
 
 	//calculates the time until Mt in hours 
-	void CalculateTimeUntilMoving();
-
+	void CalculateTimeUntilMoving(const Time& currtime);
+	PriQueue<cargo*, int> getqcargos();
 	//getter
 	int getTimeUntilMoving();
 
 	Time getloadentry();
 	//sets the the time the truck entered the loading trucks queue
 	void setloadentry(Time k);
+
+	Time getDI();
+		//cargo* checkcargodeliv(Time c);//checks if it's time to deq a cargo
+
 	~truck();
 };

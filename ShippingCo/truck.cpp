@@ -14,6 +14,14 @@ void truck::CalculateMovingTime()
 	MT.calculateTime(CurrDay, newH);
 }
 
+cargo* truck::getFirstCargo()
+{
+	//ptr to the first cargo in the pQueue
+	cargo* cPtr;
+	cargosassigned.peek(cPtr);
+	return cPtr;
+}
+
 truck::truck() :ID(id)
 {
 	id++;
@@ -38,7 +46,7 @@ void truck::resetj() {
 	journeys = 0;
 }
 
-PriQueue<cargo*> truck::getcargos() {
+PriQueue<cargo*, int> truck::getcargos() {
 	return cargosassigned;
 }
 
@@ -66,23 +74,54 @@ void truck::assigncargo(cargo* c) {
 
 
 }
+int truck::gettotalj() { return journeys; }
+int truck::getj() { return J; }
 
-int truck::DI() {
-	int di;int sumloadingt = 0;
+int truck::getFurtherestCargoDist()
+{
+	cargo* cPtr;
+	cargosassigned.peekLast(cPtr);
+	
+	return cPtr->getdist();
+}
+
+bool truck::DeliverCargo(cargo*& DeliveredCargo)
+{
+	return(cargosassigned.dequeue(DeliveredCargo));
+
+}
+
+void truck::caculateCDt()
+{
+	//ptr to the first cargo in the pQueue
+	cargo* cPtr;
+	cPtr = getFirstCargo();
+
+	int truckSpeed = speed;
+	int cargoDistance = cPtr->getdist();
+	int cargoUnloadTIme = cPtr->getlt();
+	int hours = (cargoDistance / truckSpeed) + cargoUnloadTIme;
+	//TIme object
+	Time t1;
+	t1.settime(0, hours);
+	t1 = t1 + MT;  //t1 now is the CDt
+
+	//CDT is now calculated in the first cargo in the Pqueue
+	cPtr->setCDT(t1);
+}
+
+Time truck::getCDT()
+{
 	cargo* c;
-	queue<cargo*>q;
-	while (cargosassigned.dequeue(c)) {
-		sumloadingt = c->getlt() + sumloadingt;
-		q.enqueue(c);
-	}
-	cargo* f;
-	while (q.dequeue(f)) {
-		cargosassigned.enqueueAsc(f, f->getdist());
-	}
-	int furthestd = c->getdist();//furthest distance cargo
+	c = getFirstCargo();
+	return(c->getCDT());
+}
 
-	di = furthestd / speed + sumloadingt + furthestd / speed;//?!?!?!?!?!?!
-	return di;
+void truck::DI(Time currTime) {
+	int furthDist = getFurtherestCargoDist();
+	int hours = (furthDist / speed) * 2 +sumlt;
+	Time t(0, hours);
+	Di = t + currTime;
 
 }
 int truck::getltsum() {
@@ -107,14 +146,14 @@ Time truck::getMT() {
 
 }
 
-void truck::CalculateTimeUntilMoving()
+void truck::CalculateTimeUntilMoving(const Time& currtime)
 {
 	//truck's moving time
 	int d1 = MT.getDays();
 	int h1 = MT.gethour();
 	//passed object days and hours
-	int d2 = loadingentry.getDays();
-	int h2 = loadingentry.gethour();
+	int d2 = currtime.getDays();
+	int h2 = currtime.gethour();
 	//in hours
 	TimeUntilMoving = (d1 - d2) * 24 + (h1 - h2);
 }
@@ -123,9 +162,8 @@ void truck::CalculateTimeUntilMoving()
 
 int truck::getTimeUntilMoving()
 {
-	CalculateTimeUntilMoving();
 	return TimeUntilMoving;
-	
+	return 0;
 }
 
 Time truck::getloadentry() {
@@ -137,9 +175,15 @@ void truck::setloadentry(Time k) {
 	loadingentry = k;
 }
 
+Time truck::getDI()
+{
+	
+	return Di;
+}
 
 
 
+PriQueue<cargo*, int> truck::getqcargos() { return cargosassigned; }
 
 
 

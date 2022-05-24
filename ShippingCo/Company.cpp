@@ -311,7 +311,6 @@ void Company::autopromotion() { /// autop days after a cargo is waiting then pro
 			vipcargos.enqueueDesc(l, l->getP());
 			numcnorm--;numcVIP++;
 			autopromotedcargos++;
-		
 		}
 		else c = c->getNext();
 	}
@@ -387,10 +386,10 @@ bool Company::noavailabletruck() {
 }
 
 void Company::assigncargototruck() {
-	//handle wether it's time for the trucks to get out 
-	truckscheckup();
-	//auto promote cargos after autop 
-	autopromotion();
+
+	//truckscheckup();
+
+	//autopromotion();
 	//checkss if company is in its working hours
 	if (currtime.gethour() > 5 && currtime.gethour() < 23)
 	{
@@ -462,9 +461,6 @@ void Company::assigncargototruck() {
 				else if (!sptrucks.Isempty())
 				{
 					//checks if the ready cargos are equal or more than the truck's capacity
-					
-
-
 					if (vipcargos.size() >= casp)
 					{
 						///loading rule
@@ -505,10 +501,8 @@ void Company::assigncargototruck() {
 				//checks if there is an available special truck
 				if (!sptrucks.Isempty())
 				{
-					cargo* h;spcargos.peek(h);
-					
 					//checks if no of special cargos is equal or more than the truck's capacity
-					  if (spcargos.getsize() >= casp)
+					if (spcargos.getsize() >= casp)
 					{
 						truck* t;
 						//removes a special truck from the available trucks list
@@ -530,29 +524,6 @@ void Company::assigncargototruck() {
 
 
 					}
-					  //maxw 
-					  //cargo* h;spcargos.peek(h);
-					  else if (h->getwt(currtime) >= maxW) {
-						  truck* t;
-						  //removes a special truck from the available trucks list
-						  sptrucks.dequeue(t);
-						  
-						  //removes the cargo from the ready list
-						  
-						  while (h->getwt(currtime) >= maxW)
-						  {
-							  spcargos.dequeue(h);
-							  t->assigncargo(h);
-							  //insert the truck into the loading truck list
-							  t->setloadentry(currtime);
-							  //calculates the tuck's moving time
-							  t->CalculateMovingTime();
-							  //inserts the truck in the loading trucks 
-							  loadingtrucks.enqueueAsc(t, t->getTimeUntilMoving());
-							  if (!spcargos.peek(h)) break;
-						  }
-
-					  }
 
 				}
 			}
@@ -645,14 +616,27 @@ void Company::assigncargototruck() {
 
 void Company::movetruck() {
 	truck* t;
+	cargo* c;
 	//checks if the Truck(s) MT came or not
 	while (loadingtrucks.peek(t))
 	{
 		//moves the truck to the moving trucks list to start delivering 
 		if (t->getMT() == currtime)
 		{
+			//removes a truck from the loading trucks
 			loadingtrucks.dequeue(t);
-			movingtrucks.enqueueAsc(t, t->DI());
+
+			//calculates the CDT of the first cargo to be delivered in this truck
+			t->caculateCDt();
+
+			//calcul DI
+			t->DI(currtime);
+
+
+			//gets the cargo that will be delivered firstly
+			
+			movingtrucks.enqueueAsc(t, t->getCDT());
+			/*movingtrucks.enqueueAsc(t, t->DI());*/
 		}
 		//if the first truck will not move none will
 		else break;
@@ -664,17 +648,98 @@ void Company::movetruck() {
 
 void Company::Deliver()
 {
+	truck* t;
+	cargo* c;
+	while (loadingtrucks.peek(t))
+	{
+		Time CDT;
+		CDT = t->getCDT();
+		if (CDT == currtime)
+		{
 
+			//Removes the cargo to be delivered from the truck 
+			t->DeliverCargo(c);
+
+			//places the delivered cargo in the DElivered cargos queues
+			DelieveredCargos.enqueue(c);
+			totalDeliveredCargos++;
+			//places the truck again in the loading (not moving ??) trucks if it still has cargos to deliver 
+			if (t->getqcargos().size()==0)
+			{
+
+				//calc delivery interval and returns it
+				
+				returningtrucks.enqueueAsc(t,t->getDI());
+
+;
+				
+			}
+			else
+			{
+				//ifthetruckstill has cargos to deliver
+
+				//calculates the CDT for the first cargo in the pQueue
+				t->caculateCDt();
+
+				//renters thetruck in the pQueue
+				movingtrucks.enqueueAsc(t, t->getCDT());
+
+			}
+		}
+		else break;
+	}
+}
+
+void Company::returnTruck()
+{
+	truck* tPtr;
+	while (returningtrucks.peek(tPtr))
+	{
+		if (tPtr->getDI() == currtime)
+		{
+			char type = tPtr->getType();
+			int j = tPtr->gettotalj();
+			
+			//checks if the truck must be maintained
+				if ( j != tPtr->getj()) {
+					switch (type)
+					{
+					case 'N':
+						normtrucks.enqueue(tPtr);
+						break;
+					case'S':
+						sptrucks.enqueue(tPtr);
+						break;
+					case'V':
+						viptrucks.enqueue(tPtr);
+						break;
+					default:
+						break;
+					}
+
+				}
+				else 
+				{
+					switch (type)
+					{
+					case 'N':
+						checkuptnormal.enqueue(tPtr);
+						break;
+					case'S':
+						checkuptspecial.enqueue(tPtr);
+						break;
+					case'V':
+						checkuptvip.enqueue(tPtr);
+						break;
+					default:
+						break;
+					}
+			}
+		}
+	}
 }
 
 
-
-
-
-
-
-
-///////////////////////////////////////printing ////////////////////////////////////////////////////////
 void Company::PrintWaitingCargos()
 {
 	int TotalWaitingCargos; //total waiting cargos

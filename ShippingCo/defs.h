@@ -8,22 +8,36 @@ class Time {
 
 public:
 	//constructor
-	Time() :days(0), hours(0) {}
-	Time(int d, int h) { calculateTime(d, h); }
+	Time() :days(0), hours(0)
+	{}
+	Time(int d, int h)
+	{
+		calculateTime(d, h);
+	}
 
 	//getters
-	int gethour() const { return hours; }
-	int getDays()const { return days; }
+	int gethour() const
+	{
+		return hours;
+	}
+	int getDays()const
+	{
+		return days;
+	}
 	//setters
-	void settime(int d, int h) { calculateTime(d, h); }
-	//converts hours and days to Time
+	void settime(int d, int h)
+	{
+		calculateTime(d, h);
+	}
+	//converts hours and days to Time (same as set time)
 	void calculateTime(int d, int h)
 	{
 		if (h > 23)
 		{
-			hours = 0;
-			days = d++; //check on postfix and prefix
+			hours = h - 23;
+			days = ++d; //check on postfix and prefix
 		}
+
 		else
 		{
 			days = d;
@@ -58,6 +72,40 @@ public:
 
 
 	}
+	bool operator >(const Time& t2)
+	{
+		//calling object's days andhours
+		int d1 = days;
+		int h1 = hours;
+		//passed object days and hours
+		int d2 = t2.getDays();
+		int h2 = t2.gethour();
+
+		if ((d1 > d2) || (d1 == d2 && h1 > h2))
+		{
+			return true;
+		}
+		return false;
+
+
+	}
+	bool operator <(const Time& t2)
+	{
+		//calling object's days andhours
+		int d1 = days;
+		int h1 = hours;
+		//passed object days and hours
+		int d2 = t2.getDays();
+		int h2 = t2.gethour();
+
+		if ((d1 < d2) || (d1 == d2 && h1 < h2))
+		{
+			return true;
+		}
+		return false;
+
+
+	}
 	bool operator == (const Time& t2)
 	{
 		//calling object's days andhours
@@ -69,6 +117,17 @@ public:
 		if (d1 == d2 && h1 == h2)
 			return true;
 		return false;
+	}
+	bool operator <=(const Time& t2) {
+		//calling object's days andhours
+		int d1 = days;
+		int h1 = hours;
+		//passed object days and hours
+		int d2 = t2.getDays();
+		int h2 = t2.gethour();
+		if (d1 <= d2 || d1 == d2 && h1 <= h2) return true;
+		else return false;
+
 	}
 	Time operator +(const Time& t1)
 	{
@@ -83,6 +142,7 @@ public:
 		int d1 = t1.getDays();
 		int h1 = t1.gethour();
 		calculateTime(days - d1, hours - h1);
+
 		return Time(days, hours); // we must check that days and hourss aren't -ve(to be done)
 
 	}
@@ -90,7 +150,8 @@ public:
 		if (this->hours == T2.hours && this->days == T2.days) return true;
 		else return false;
 	}*/
-	Time& operator =(const Time& T2) {
+	Time& operator =(const Time& T2)
+	{
 		this->hours = T2.hours;
 		this->days = T2.days;
 		return *this;

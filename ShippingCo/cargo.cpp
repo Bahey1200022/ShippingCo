@@ -25,6 +25,11 @@ int cargo::getcost() { return Cost; }
 
 int cargo::getlt() { return LT; }
 
+Time cargo::getCDT()
+{
+	return CDT;
+}
+
 int cargo::getP() { calcP(); return p; }
 
 truck* cargo::gettruck() { return truckassi; }
@@ -34,6 +39,11 @@ void cargo::calcWT() {}
 void cargo::calcCDT() {}
 
 void cargo::settype() { type = 'V'; }
+
+void cargo::setCDT(Time t)
+{
+	CDT = t;
+}
 
 void cargo::calcP() { p = Cost / (dist + LT); }
 

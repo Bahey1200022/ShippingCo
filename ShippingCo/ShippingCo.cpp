@@ -7,6 +7,7 @@ using namespace std;
 
 int main()
 {
+
 	//create company
 	Company Shipco;
 
@@ -34,6 +35,9 @@ int main()
 			//Delivring function
 			Shipco.Deliver();
 
+			//Returns the trucks 
+			Shipco.returnTruck();
+
 			//Printing function
 			Shipco.StartInterface();
 
@@ -42,6 +46,7 @@ int main()
 		}
 	}
 
+	cout << "code is working" << endl;
 	system("pause");
 	return 0;
 }

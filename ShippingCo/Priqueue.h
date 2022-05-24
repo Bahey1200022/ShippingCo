@@ -2,30 +2,31 @@
 #include "priorityN.h"
 using namespace std;
 
-template < typename T>
+template < typename T, typename U>
 class PriQueue
 {
-	priorityN<T>* backPtr;
-	priorityN<T>* frontPtr;
+	priorityN<T, U>* backPtr;
+	priorityN<T, U>* frontPtr;
 	int Count;
 
 public:
 	PriQueue();
 	bool isEmpty() const;
 	bool enqueue(const T& newEntry);
-	bool enqueueAsc(const T& newEntry, int priority);
-	bool enqueueDesc(const T& newEntry, int priority);
+	bool enqueueAsc(const T& newEntry, U priority);
+	bool enqueueDesc(const T& newEntry, U priority);
 	bool dequeue(T& frntEntry);
 	bool peek(T& frntEntry)  const;
+	bool peekLast(T& data) const;
 	int size();
 	void Print() const;
 	~PriQueue();
 
-	PriQueue(const PriQueue<T>& LQ);
+	PriQueue(const PriQueue<T, U>& LQ);
 };
 
-template <typename T>
-PriQueue<T>::PriQueue()
+template < typename T, typename U>
+PriQueue<T, U>::PriQueue()
 {
 	backPtr = nullptr;
 	frontPtr = nullptr;
@@ -33,17 +34,17 @@ PriQueue<T>::PriQueue()
 
 }
 
-template <typename T>
-bool PriQueue<T>::isEmpty() const
+template < typename T, typename U>
+bool PriQueue<T, U>::isEmpty() const
 {
 	return (frontPtr == nullptr);
 }
 
-template <typename T>
-bool PriQueue<T>::enqueueAsc(const T& newEntry, int priority)
+template < typename T, typename U>
+bool PriQueue<T, U>::enqueueAsc(const T& newEntry, U priority)
 {
-	priorityN<T>* tmp, * q;
-	tmp = new priorityN<T>;
+	priorityN<T, U>* tmp, * q;
+	tmp = new priorityN<T, U>;
 	tmp->setItem(newEntry);
 	tmp->setPriority(priority);
 	if (frontPtr == nullptr || priority < frontPtr->getPriority())
@@ -63,11 +64,11 @@ bool PriQueue<T>::enqueueAsc(const T& newEntry, int priority)
 	return true;
 }
 
-template <typename T>
-bool PriQueue<T>::enqueueDesc(const T& newEntry, int priority)
+template < typename T, typename U>
+bool PriQueue<T, U>::enqueueDesc(const T& newEntry, U priority)
 {
-	priorityN<T>* tmp, * q;
-	tmp = new priorityN<T>;
+	priorityN<T, U>* tmp, * q;
+	tmp = new priorityN<T, U>;
 	tmp->setItem(newEntry);
 	tmp->setPriority(priority);
 	if (frontPtr == nullptr || priority > frontPtr->getPriority())
@@ -87,10 +88,10 @@ bool PriQueue<T>::enqueueDesc(const T& newEntry, int priority)
 	return true;
 }
 
-template <typename T>
-bool PriQueue<T>::enqueue(const T& newEntry)
+template < typename T, typename U>
+bool PriQueue<T, U>::enqueue(const T& newEntry)
 {
-	priorityN<T>* newNodePtr = new priorityN<T>(newEntry);
+	priorityN<T, U>* newNodePtr = new priorityN<T, U>(newEntry);
 	// Insert the new node
 	if (isEmpty())	//special case if this is the first node to insert
 		frontPtr = newNodePtr; // The queue is empty
@@ -103,13 +104,13 @@ bool PriQueue<T>::enqueue(const T& newEntry)
 	return true;
 }
 
-template <typename T>
-bool PriQueue<T>::dequeue(T& frntEntry)
+template < typename T, typename U>
+bool PriQueue<T, U>::dequeue(T& frntEntry)
 {
 	if (isEmpty())
 		return false;
 
-	priorityN<T>* NodePriToDeletePtr = frontPtr;
+	priorityN<T, U>* NodePriToDeletePtr = frontPtr;
 	frntEntry = frontPtr->getItem();
 	frontPtr = frontPtr->getNext();
 	// Queue is not empty; remove front
@@ -123,8 +124,8 @@ bool PriQueue<T>::dequeue(T& frntEntry)
 
 }
 
-template <typename T>
-bool PriQueue<T>::peek(T& frntEntry) const
+template < typename T, typename U>
+bool PriQueue<T, U>::peek(T& frntEntry) const
 {
 	if (isEmpty())
 		return false;
@@ -134,8 +135,19 @@ bool PriQueue<T>::peek(T& frntEntry) const
 
 }
 
-template <typename T>
-PriQueue<T>::~PriQueue()
+template<typename T, typename U>
+bool PriQueue<T, U>::peekLast(T& data) const
+{
+	if (isEmpty())
+		return false;
+
+	data = backPtr->getItem();
+	return true;
+
+}
+
+template < typename T, typename U>
+PriQueue<T, U>::~PriQueue()
 {
 	T temp;
 
@@ -143,10 +155,10 @@ PriQueue<T>::~PriQueue()
 	while (dequeue(temp));
 }
 
-template <typename T>
-PriQueue<T>::PriQueue(const PriQueue<T>& LQ)
+template < typename T, typename U>
+PriQueue<T, U>::PriQueue(const PriQueue<T, U>& LQ)
 {
-	priorityN<T>* NodePriPtr = LQ.frontPtr;
+	priorityN<T, U>* NodePriPtr = LQ.frontPtr;
 	if (!NodePriPtr) //LQ is empty
 	{
 		frontPtr = backPtr = nullptr;
@@ -154,29 +166,29 @@ PriQueue<T>::PriQueue(const PriQueue<T>& LQ)
 	}
 
 	//insert the first NodePri
-	priorityN<T>* ptr = new priorityN<T>(NodePriPtr->getItem());
+	priorityN<T, U>* ptr = new priorityN<T, U>(NodePriPtr->getItem());
 	frontPtr = backPtr = ptr;
 	NodePriPtr = NodePriPtr->getNext();
 
 	//insert remaining NodePris
 	while (NodePriPtr)
 	{
-		priorityN<T>* ptr = new priorityN<T>(NodePriPtr->getItem());
+		priorityN<T, U>* ptr = new priorityN<T, U>(NodePriPtr->getItem());
 		backPtr->setNext(ptr);
 		backPtr = ptr;
 		NodePriPtr = NodePriPtr->getNext();
 	}
 }
 
-template <typename T>
-int PriQueue<T>::size()
+template < typename T, typename U>
+int PriQueue<T, U>::size()
 {
 	return Count;
 }
 
-template <typename T>
-void PriQueue<T>::Print() const {
-	priorityN<T>* tmp = frontPtr;
+template < typename T, typename U>
+void PriQueue<T, U>::Print() const {
+	priorityN<T, U>* tmp = frontPtr;
 	while (tmp) {
 		cout << tmp->getItem()->getID() << ", ";
 		tmp = tmp->getNext();

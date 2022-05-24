@@ -1,77 +1,78 @@
 #pragma once 
 //node with a priority property to form a pri. queue
 
-template < typename T>
+template < typename T, typename U>
 class priorityN
 {
 private:
 	T item;
-	priorityN<T>* next;
-	int Priority;
+	priorityN<T, U>* next;
+	U Priority;
 public:
 	priorityN();
 	priorityN(const T& it);
-	priorityN(const T& it, priorityN<T>* nextp);
+	priorityN(const T& it, priorityN<T, U>* nextp);
 	void setItem(const T& it);
-	void setNext(priorityN<T>* nextp);
-	void setPriority(int P);
+	void setNext(priorityN<T, U>* nextp);
+	void setPriority(U P);
 	T getItem() const;
-	priorityN<T>* getNext() const;
-	int getPriority();
+	priorityN<T, U>* getNext() const;
+	U getPriority();
 };
 
 
-template < typename T>
-priorityN<T>::priorityN()
+template < typename T, typename U>
+priorityN<T, U>::priorityN()
 {
 	next = nullptr;
 }
 
-template < typename T>
-priorityN<T>::priorityN(const  T& it)
+template < typename T, typename U>
+priorityN<T, U>::priorityN(const  T& it)
 {
 	item = it;
 	next = nullptr;
 }
 
-template < typename T>
-priorityN<T>::priorityN(const T& it, priorityN<T>* nextp)
+template < typename T, typename U>
+priorityN<T, U>::priorityN(const T& it, priorityN<T, U>* nextp)
 {
 	item = it;
 	next = nextp;
 }
-template < typename T>
-void priorityN<T>::setItem(const T& it)
+
+template < typename T, typename U>
+void priorityN<T, U>::setItem(const T& it)
 {
 	item = it;
 }
 
-template < typename T>
-void priorityN<T>::setNext(priorityN<T>* nextp)
+template < typename T, typename U>
+void priorityN<T, U>::setNext(priorityN<T, U>* nextp)
 {
 	next = nextp;
 }
 
-template < typename T>
-T priorityN<T>::getItem() const
+template < typename T, typename U>
+T priorityN<T, U>::getItem() const
 {
 	return item;
 }
 
-template < typename T>
-priorityN<T>* priorityN<T>::getNext() const
+template < typename T, typename U>
+priorityN<T, U>* priorityN<T, U>::getNext() const
 {
 	return next;
 }
 
-template < typename T>
-int priorityN<T>::getPriority()
+template < typename T, typename U>
+U priorityN<T, U>::getPriority()
 {
 	return Priority;
 }
 
-template < typename T>
-void priorityN<T>::setPriority(int P)
+template < typename T, typename U>
+void priorityN<T, U>::setPriority(U P)
 {
 	Priority = P;
 }

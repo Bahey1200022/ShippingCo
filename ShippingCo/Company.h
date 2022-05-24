@@ -29,7 +29,7 @@ private:
 	int autoplimit, maxW;
 
 
-	int totalcargos;//IMPORTANT output file
+	int totalcargos;
 	int numcspecial, numcVIP, numcnorm;//total no.s of each type of cargos
 	int mnumspecial, mnumcVIP, mnumcnorm;//moving cargos
 	int  wnumcspecial, wnumcVIP, wnumcnorm; //waiting cargos
@@ -52,7 +52,7 @@ private:
 	queue<events*>eventss;
 
 	/// waiting cargo lists
-	PriQueue<cargo*>vipcargos;
+	PriQueue<cargo*, int>vipcargos;
 	LinkedList<cargo*>normcargos;
 	queue<cargo*>spcargos;
 
@@ -74,12 +74,13 @@ private:
 	queue<cargo*> DelieveredCargos; //
 
 	//Loading trucks
-	PriQueue<truck*>loadingtrucks;//pri least sum of lt 
+	PriQueue<truck*, int>loadingtrucks;//pri least sum of lt 
 
 	//Moving trucks
-	PriQueue<truck*>movingtrucks; //pri:least Delivery interval
+	PriQueue<truck*, Time>movingtrucks; //pri:least Delivery interval
 
-
+	//trucks that has no cargos
+	PriQueue<truck*, Time>returningtrucks;
 	/////phase 1 moving cargos list 
 	//queue<cargo*> movingc;
 
@@ -146,8 +147,8 @@ public:
 	//Delivering cargos function
 	void Deliver();
 
-	//move trucks to cheuck up
-	//void tocheckup(); Do we need it ??
+	//returning trucks 
+	void returnTruck();
 
 	//printing functions
 	void PrintWaitingCargos();
