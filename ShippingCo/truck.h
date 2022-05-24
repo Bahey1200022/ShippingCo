@@ -50,6 +50,7 @@ class truck
 	//the total loading time of the assigned carrgos
 	int sumlt;
 
+	char cargotype; //type of c a tr. is carrying 
 public:
 	//constructors
 	truck();
@@ -59,6 +60,7 @@ public:
 
 	//resets journeys back to zero
 	void resetj();
+	void PrintCargos();
 
 	///
 	PriQueue<cargo*, int> getcargos();
@@ -119,6 +121,8 @@ public:
 
 	Time getDI();
 		//cargo* checkcargodeliv(Time c);//checks if it's time to deq a cargo
+	void setcargotype(char t);
+	char getcargotype();
 
 	~truck();
 };

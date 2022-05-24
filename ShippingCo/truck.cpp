@@ -62,7 +62,10 @@ char truck::getType()
 {
 	return ttype;
 }
-
+void truck::PrintCargos()
+{
+	cargosassigned.Print1();
+}
 
 void truck::assigncargo(cargo* c) {
 
@@ -181,7 +184,8 @@ Time truck::getDI()
 	return Di;
 }
 
-
+void truck::setcargotype(char t) { cargotype = t; }
+char truck::getcargotype() { return cargotype; }
 
 PriQueue<cargo*, int> truck::getqcargos() { return cargosassigned; }
 

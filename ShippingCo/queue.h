@@ -16,7 +16,8 @@ public:
 	bool peek(T& fr) const;
 	int getsize();
 	void print() const;
-	//void printtruck() const;
+	void print2() const;
+	void printtruck() const;
 	~queue();
 	//copy constructor
 	queue(const queue<T>& LQ);
@@ -137,11 +138,54 @@ void queue<T>::print() const {
 		tmp = tmp->getNext();
 	}
 }
-/**template <typename T>
-void queue<T>::printtruck() const {
+
+template<typename T>
+void queue<T>::print2() const
+{
 	Node<T>* tmp = front;
-	while (tmp) {
-		cout << tmp->getItem()->gettruckid() << ", ";
+	while (tmp)
+	{
+		char type = tmp->getItem()->getType();;
+
+		switch (type)
+		{
+		case 'N':
+			cout << "[";
+			break;
+		case 'S':
+			cout << "(";
+			break;
+		case 'V':
+			break;
+			cout << "{";
+		default:
+			break;
+		}
+		cout << tmp->getItem()->getID();
+		switch (type)
+		{
+		case 'N':
+			cout << "] ";
+			break;
+		case 'S':
+			cout << ") ";
+			break;
+		case 'V':
+			break;
+			cout << "} ";
+		default:
+			break;
+		}
+
+		
 		tmp = tmp->getNext();
 	}
-}*/
+}
+template<typename T>
+void queue<T> ::printtruck() const {
+	Node<T>* tmp = front;
+	while (tmp) {
+		cout << tmp->getItem()->getID() << ", ";
+		tmp = tmp->getNext();
+	}
+}

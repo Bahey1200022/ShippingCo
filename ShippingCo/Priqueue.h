@@ -1,5 +1,6 @@
 #pragma once 
 #include "priorityN.h"
+
 using namespace std;
 
 template < typename T, typename U>
@@ -20,8 +21,9 @@ public:
 	bool peekLast(T& data) const;
 	int size();
 	void Print() const;
+	void Print1() const;
 	~PriQueue();
-
+	void PrintTruck() const;
 	PriQueue(const PriQueue<T, U>& LQ);
 };
 
@@ -192,5 +194,64 @@ void PriQueue<T, U>::Print() const {
 	while (tmp) {
 		cout << tmp->getItem()->getID() << ", ";
 		tmp = tmp->getNext();
+	}
+}
+template<typename T, typename U>///for the cargos
+void PriQueue<T, U>::Print1() const
+{
+	priorityN<T, U>* tmp = frontPtr;
+	
+	char type = tmp->getItem()->getType();
+	switch (type)
+	{
+	case 'N':
+		cout << "[";
+		break;
+	case 'S':
+		cout << "(";
+		break;
+	case 'V':
+		
+		cout << "{";
+		break;
+	default:
+		break;
+	}
+	while (tmp)
+	{
+
+
+		
+		cout << tmp->getItem()->getID() << ", ";
+		tmp = tmp->getNext();
+	}
+	switch (type)
+	{
+	case 'N':
+		cout << "] ";
+		break;
+	case 'S':
+		cout << ") ";
+		break;
+	case 'V':
+		
+		cout << "} ";
+		break;
+	default:
+		break;
+	}
+
+}
+
+template<typename T, typename U>
+void PriQueue<T, U>::PrintTruck() const
+{
+	priorityN<T, U>* tmp = frontPtr;
+	while (tmp)
+	{
+		cout << tmp->getItem()->getID();
+		tmp->getItem()->PrintCargos();
+			cout<< " ";
+			tmp = tmp->getNext();
 	}
 }

@@ -388,9 +388,9 @@ bool Company::noavailabletruck() {
 //===============================================================================================================================================================================
 void Company::assigncargototruck() {
 
-	//truckscheckup();
+	truckscheckup();
 
-	//autopromotion();
+	autopromotion();
 	//checkss if company is in its working hours
 	if (currtime.gethour() > 5 && currtime.gethour() < 23)
 	{
@@ -414,7 +414,9 @@ void Company::assigncargototruck() {
 							vipcargos.dequeue(c);
 							t->assigncargo(c);
 						}
+						t->setcargotype('V');
 						//insert the truck into the loading truck list
+						
 						t->setloadentry(currtime);
 						//calculates the tuck's moving time
 						t->CalculateMovingTime();
@@ -446,6 +448,7 @@ void Company::assigncargototruck() {
 							vipcargos.dequeue(c);
 							t->assigncargo(c);
 						}
+						t->setcargotype('V');
 						//insert the truck into the loading truck list
 						t->setloadentry(currtime);
 						//calculates the tuck's moving time
@@ -476,6 +479,7 @@ void Company::assigncargototruck() {
 							vipcargos.dequeue(c);
 							t->assigncargo(c);
 						}
+						t->setcargotype('V');
 						//insert the truck into the loading truck list
 						t->setloadentry(currtime);
 
@@ -517,6 +521,7 @@ void Company::assigncargototruck() {
 							spcargos.dequeue(c);
 							t->assigncargo(c);
 						}
+						t->setcargotype('S');
 						//insert the truck into the loading truck list
 						t->setloadentry(currtime);
 						//calculates the tuck's moving time
@@ -532,12 +537,14 @@ void Company::assigncargototruck() {
 						sptrucks.dequeue(t);
 						while (h->getwt(currtime) >= maxW) {
 							spcargos.dequeue(h);t->assigncargo(h);
+							t->setcargotype('S');
 							//insert the truck into the loading truck list
 							t->setloadentry(currtime);
 							//calculates the tuck's moving time
 							t->CalculateMovingTime();
 							//inserts the truck in the loading trucks 
 							loadingtrucks.enqueueAsc(t, t->getTimeUntilMoving());
+
 							if (!spcargos.peek(h)) break;
 						}
 					}
@@ -572,6 +579,7 @@ void Company::assigncargototruck() {
 							t->assigncargo(c);
 
 						}
+						t->setcargotype('N');
 						// insert the truck into the l. truck list
 						t->setloadentry(currtime);
 						//calculates the tuck's moving time
@@ -588,6 +596,7 @@ void Company::assigncargototruck() {
 						while (l->getwt(currtime) >= maxW) {
 							normcargos.RemoveFirst(l);t->assigncargo(l);
 							//insert the truck into the loading truck list
+							t->setcargotype('N');
 							t->setloadentry(currtime);
 							//calculates the tuck's moving time
 							t->CalculateMovingTime();
@@ -617,6 +626,7 @@ void Company::assigncargototruck() {
 								normcargos.RemoveFirst(c);
 								t->assigncargo(c);
 							}
+								t->setcargotype('N');
 							// insert the truck into the l truck list
 							t->setloadentry(currtime);
 							//calculates the tuck's moving time
@@ -631,6 +641,7 @@ void Company::assigncargototruck() {
 							viptrucks.dequeue(t);
 							while (l->getwt(currtime) >= maxW) {
 								normcargos.RemoveFirst(l);t->assigncargo(l);
+								t->setcargotype('N');
 								//insert the truck into the loading truck list
 								t->setloadentry(currtime);
 								//calculates the tuck's moving time
@@ -838,9 +849,9 @@ void Company::PrintLoadingTrucks()
 	uiPtr->printData(" ");
 	uiPtr->printData("Loading Trucks: ");
 
-	uiPtr->printData("(");
-	loadingtrucks.Print();
-	uiPtr->printData(") ");
+	
+	loadingtrucks.PrintTruck();
+	
 
 
 }
@@ -877,24 +888,25 @@ void Company::PrintEmptyTrucks()
 
 void Company::PrintMovingCargos() //
 {
-	uiPtr->printData(0);
+	int TotatmovingTrucks =movingtrucks.size();
+	uiPtr->printData(TotatmovingTrucks);
 	uiPtr->printData(" ");
-	uiPtr->printData("Moving Cargos: ");
-	uiPtr->printData("[], ");
-	uiPtr->printData("(), ");
-	uiPtr->printData("{} ");
+	uiPtr->printData("moving cargos: ");
+
+
+	movingtrucks.PrintTruck();
 }
 
 void Company::PrintInCheckupTrucks()
 {
-	/**int TotalTrucksInCheckup = CheckUpQueue.getsize();
+	int TotalTrucksInCheckup = checkuptnormal.getsize() + checkuptspecial.getsize() + checkuptvip.getsize();
 	uiPtr->printData(TotalTrucksInCheckup);
 	uiPtr->printData(" ");
 	uiPtr->printData("In-Checkup Trucks: ");
 
 	//prints Normal trucks in checkUps
 	uiPtr->printData("[");
-	checkuptnormal.print()
+	checkuptnormal.print();
 		uiPtr->printData("] ");
 
 	//prints Special trucks
@@ -908,38 +920,12 @@ void Company::PrintInCheckupTrucks()
 	uiPtr->printData("} ");
 
 
-	*/
+	
 }
 
 void Company::PrintDeliveredCargos()
 {
-	//int TotalDeliveredCargos;  //total delivered
-	//int TotalDeliveredNormalCargos; //total delivered normal cargos
-	//int TotalDeliveredSpecialCargos; //total delivered special cargos
-	//int TotalDeliveredVIPCargos; //total delivered vip cargos*?*/
-
-	//
-	////adds them all up
-	////TotalDeliveredCargos = TotalDeliveredNormalCargos + TotalDeliveredSpecialCargos + TotalDeliveredVIPCargos;
-	//uiPtr->printData(TotalDeliveredCargos);
-	//uiPtr->printData(" ");
-	//uiPtr->printData("Delivered Cargos: ");
-
-	////starts to print  delivered cargos
-	//uiPtr->printData("[");
-	//finishednormcargos.print();
-	//uiPtr->printData("] ");
-	//
-	////starts to print delivered special cargos
-	//uiPtr->printData("(");
-	//finishedspcargos.print();
-	//uiPtr->printData(") ");
-
-	////starts to print delivered vip cargos
-	//uiPtr->printData("{");
-	//finishedvipcargos.print();
-	//uiPtr->printData("} ");
-
+	
 	//total delivered
 	int TotalDeliveredCargos = DelieveredCargos.getsize();
 	uiPtr->printData(TotalDeliveredCargos);
@@ -947,7 +933,7 @@ void Company::PrintDeliveredCargos()
 	uiPtr->printData("Delivered Cargo: ");
 
 	//Prints Delivered cargos in order of delivery 
-	DelieveredCargos.print();
+	DelieveredCargos.print2();
 
 
 
