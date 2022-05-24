@@ -32,18 +32,13 @@ public:
 	//converts hours and days to Time (same as set time)
 	void calculateTime(int d, int h)
 	{
-		if (h > 23)
-		{
-			hours = h - 23;
-			days = ++d; //check on postfix and prefix
-		}
-
-		else
-		{
-			days = d;
+		
+			while (h > 23)
+			{
+				h = h - 24;
+				days = ++d;
+			}
 			hours = h;
-		}
-
 	}
 
 	//operators overloading functions

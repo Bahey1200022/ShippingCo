@@ -434,7 +434,7 @@ void Company::assigncargototruck() {
 				else if (!normtrucks.Isempty())
 				{
 					//checks if the ready cargos are equal or more than the truck's capacity
-					if (vipcargos.size() >= canorm) {
+					if (vipcargos.size() >= canorm && vipcargos.size() >= cavip) {
 						///loading rule
 						truck* t;
 						//removes normal truck from ready trucks' list
@@ -465,7 +465,7 @@ void Company::assigncargototruck() {
 				else if (!sptrucks.Isempty())
 				{
 					//checks if the ready cargos are equal or more than the truck's capacity
-					if (vipcargos.size() >= casp)
+					if (vipcargos.size() >= casp && vipcargos.size() >= cavip)
 					{
 						///loading rule
 						truck* t;
@@ -498,7 +498,7 @@ void Company::assigncargototruck() {
 
 			}
 			//End of VIP assigning 
-			////////////////////////////////////////////////////////////////////////////////////////
+			////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			//Special trucks assiging 
 			//Checks if there are ready special cargo
 			cargo* h;spcargos.peek(h);
@@ -613,7 +613,7 @@ void Company::assigncargototruck() {
 					{
 
 						//checks if the number of normal cargos is equal or more than the truck's capacity
-						if (normcargos.getSize() >= cavip)
+						if (normcargos.getSize() >= cavip && normcargos.getSize() >= canorm)
 						{
 							truck* t;
 							//removes a VIP truck from the available trucks list
@@ -803,6 +803,10 @@ void Company::returnTruck()
 	}
 }
 
+bool Company ::operate(){ 
+	return(!nocargosleft() && !loadingtrucks.isEmpty() && !movingtrucks.isEmpty());
+		
+}
 
 void Company::PrintWaitingCargos()
 {

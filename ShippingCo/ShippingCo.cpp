@@ -22,10 +22,9 @@ int main()
 		//Shipco.Excutevents();
 		//still dont know the condition
 
-		while (Shipco.Excutevents())
+		while (Shipco.Excutevents() || Shipco.operate() )
 		{
-			//events excecution function
-			Shipco.Excutevents();
+			
 
 			//Cargo assigning fuctiom
 			Shipco.assigncargototruck();
@@ -42,12 +41,13 @@ int main()
 			//Printing function
 			Shipco.StartInterface();
 
-			//Saving functiom
-			Shipco.SaveUp();
 		}
-	}
 
-	cout << "code is working" << endl;
+		//Saving functiom
+		Shipco.SaveUp();
+	}
+	
+	//cout << "code is working" << endl;
 	system("pause");
 	return 0;
 }

@@ -150,6 +150,7 @@ public:
 	//returning trucks 
 	void returnTruck();
 
+	bool operate();
 	//printing functions
 	void PrintWaitingCargos();
 	void PrintLoadingTrucks(); //
