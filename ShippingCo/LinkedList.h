@@ -155,8 +155,16 @@ public:
 		}
 		data = currPtr->getItem();
 		delete currPtr;
+		size--;
 		return true;
 
 
+	}
+	bool peekList(T& d) {
+		if (size==0)
+			return false;
+
+		d = head->getItem();
+		return true;
 	}
 };

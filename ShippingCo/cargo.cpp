@@ -45,7 +45,7 @@ void cargo::setCDT(Time t)
 	CDT = t;
 }
 
-void cargo::calcP() { p = Cost / (dist + LT); }
+void cargo::calcP() { p = Cost / (2*dist + LT); }
 
 Time cargo::getpt() { return PT; }
 
