@@ -22,8 +22,8 @@ int main()
 		Shipco.chooseModee();
 		//Shipco.Excutevents();
 		//still dont know the condition
-
-		while (Shipco.Excutevents() || Shipco.operate() )
+		
+		while ( Shipco.Excutevents() || Shipco.operate() )
 		{
 			
 

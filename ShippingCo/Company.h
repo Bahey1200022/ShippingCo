@@ -149,7 +149,7 @@ public:
 
 	//returning trucks 
 	void returnTruck();
-
+	bool offhours();
 	bool operate();
 	//printing functions
 	void PrintWaitingCargos();

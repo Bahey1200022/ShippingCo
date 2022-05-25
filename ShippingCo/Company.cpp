@@ -260,7 +260,10 @@ void Company::cancelcargo(int id) {//cancelling a node from a linked list
 bool Company::Excutevents() {
 	bool z = false; //found an even or not
 	events* E;
-	
+	/**if (offhours()) {
+		currtime++;
+		return true;///////////////handeling off hours 
+	}*/
 		while (eventss.peek(E))
 		{
 			if (E->getET() == currtime)
@@ -277,7 +280,7 @@ bool Company::Excutevents() {
 }
 
 bool Company::nocargosleft() {
-	if (normcargos.getSize() == 0 && vipcargos.isEmpty() && spcargos.Isempty() && checkuptnormal.Isempty() && checkuptspecial.Isempty() && checkuptvip.Isempty())
+	if (eventss.getsize()==0 && normcargos.getSize() == 0 && vipcargos.isEmpty() && spcargos.Isempty() && checkuptnormal.Isempty() && checkuptspecial.Isempty() && checkuptvip.Isempty())
 		return true;
 	else return false;
 }
@@ -806,10 +809,18 @@ void Company::returnTruck()
 }
 
 bool Company::operate() {
-	return(!nocargosleft() && !loadingtrucks.isEmpty() && !movingtrucks.isEmpty());
+	return(!nocargosleft() || !loadingtrucks.isEmpty() || !movingtrucks.isEmpty());
 
 }
-
+bool Company::offhours() {
+	if (currtime.gethour() < 5)
+	{
+		return true;
+	}
+	else return false;
+}
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//===========================================================================================================================
 void Company::PrintWaitingCargos()
 {
 	int TotalWaitingCargos; //total waiting cargos
