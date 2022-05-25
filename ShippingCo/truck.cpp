@@ -36,7 +36,7 @@ truck::truck(char t, int c, int s, int jbc, int ti) : ID(id) {
 	id++;
 	journeys = 0;
 	sumlt = 0;
-
+	cargoscontained = 0;
 
 }
 
@@ -73,27 +73,30 @@ void truck::assigncargo(cargo* c) {
 	sumlt = sumlt + (c->getlt());
 
 	cargosassigned.enqueueAsc(c, dist);
-
+	cargoscontained++;
 
 
 }
 int truck::gettotalj() { return journeys; }
 int truck::getj() { return J; }
 
-int truck::getFurtherestCargoDist()
+void truck::getFurtherestCargoDist()
 {
 	cargo* cPtr;
 	cargosassigned.peekLast(cPtr);
+	getFurtherestCargo = cPtr->getdist();
 	
-	return cPtr->getdist();
 }
 
 bool truck::DeliverCargo(cargo*& DeliveredCargo)
 {
+	//if (cargoscontained == 0) cargoscontained = 0;
+	cargoscontained--;
 	return(cargosassigned.dequeue(DeliveredCargo));
+	
 
 }
-
+int truck::getcargoscount() { return cargoscontained; }
 void truck::caculateCDt()
 {
 	//ptr to the first cargo in the pQueue
@@ -121,8 +124,8 @@ Time truck::getCDT()
 }
 
 void truck::DI(Time currTime) {
-	int furthDist = getFurtherestCargoDist();
-	int hours = (furthDist / speed) * 2 +sumlt;
+	//int furthDist = getFurtherestCargoDist();
+	int hours = (getFurtherestCargo / speed) * 2 +sumlt;
 	Time t(0, hours);
 	Di = t + currTime;
 

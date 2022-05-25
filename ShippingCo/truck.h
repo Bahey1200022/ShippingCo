@@ -28,7 +28,7 @@ class truck
 	//cargos assigned to the truck
 	PriQueue<cargo*, int>cargosassigned;
 
-
+	int cargoscontained;
 	//num of journeys before checkup
 	int J;
 	//num of journeys the truck performed
@@ -42,7 +42,7 @@ class truck
 
 	//time the truck entered checkUp
 	Time checkupentry;
-
+	int getFurtherestCargo;
 	//the time at which the truck enters the loading queue
 	Time loadingentry;
 
@@ -70,7 +70,8 @@ public:
 	Time getcheckupentry();
 
 	void setcheckupentry(Time t);
-
+	
+	int getcargoscount();
 	//gets type of the truck
 	char getType();
 
@@ -86,7 +87,7 @@ public:
 
 
 	//reruens a pointer to the first cargo in the pQueue(utility fn)
-	int getFurtherestCargoDist();
+	void getFurtherestCargoDist();
 
 	//Removes the 1st cargo in the queue
 	bool DeliverCargo(cargo*& DeliveredCargo);

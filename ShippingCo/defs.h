@@ -32,6 +32,7 @@ public:
 	//converts hours and days to Time (same as set time)
 	void calculateTime(int d, int h)
 	{
+		days = d;
 		
 			while (h > 23)
 			{

@@ -18,6 +18,12 @@ Company::Company() : EventCount(0) {
 	autopromotedcargos = 0;
 	totalDeliveredCargos = 0;
 	promotedcargos = 0;
+	canorm = 0;
+	cavip = 0;
+	casp = 0;
+	mnumcnorm = 0;
+	mnumcVIP = 0;
+	mnumspecial = 0;
 	uiPtr = new UI(this);
 }
 
@@ -701,7 +707,7 @@ void Company::movetruck() {
 			//calcul DI
 			t->DI(currtime);
 
-
+			
 			//gets the cargo that will be delivered firstly
 
 			movingtrucks.enqueueAsc(t, t->getCDT());
@@ -733,7 +739,7 @@ void Company::Deliver()
 			DelieveredCargos.enqueue(c);
 			totalDeliveredCargos++;
 			//places the truck again in the loading (not moving ??) trucks if it still has cargos to deliver 
-			if (t->getqcargos().size() == 0)
+			if (t->getcargoscount() == 0)
 			{
 
 				//calc delivery interval and returns it
