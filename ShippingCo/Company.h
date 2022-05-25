@@ -149,8 +149,13 @@ public:
 
 	//returning trucks 
 	void returnTruck();
+
+	//returns if the company is off hhours
 	bool offhours();
+
+	//operation condition
 	bool operate();
+
 	//printing functions
 	void PrintWaitingCargos();
 	void PrintLoadingTrucks(); //

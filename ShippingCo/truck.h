@@ -23,6 +23,30 @@ class truck
 	//truck's speed
 	int speed;
 
+	//moving time
+	Time MT;
+
+    //Active
+	Time ActiveTime;
+
+	//the time at which the truck enters the loading queue
+	Time loadingentry;
+
+	//time at which the truck must return to the company
+	Time Di;
+
+	//the time at which the truck enters the loading queue
+	Time loadingentry;
+
+	//time the truck entered checkUp
+	Time checkupentry;
+
+	//finish time (the time the truck finishes delivering)
+	Time FT;
+
+	//time at which the truck must return to the company
+	Time Di;
+
 	char truckstatus;
 
 	//cargos assigned to the truck
@@ -38,19 +62,13 @@ class truck
 	int totaljourneys;
 	//total c deliv.
 	int cargosd;
-	//moving time
-	Time MT;
-
+	
 	//Time between the current time and moving time(used in the loading trucks priority queue)
 	int TimeUntilMoving;
 
-	//time the truck entered checkUp
-	Time checkupentry;
+	
 	int getFurtherestCargo;
-	//the time at which the truck enters the loading queue
-	Time loadingentry;
-
-	Time Di;
+	
 	//the total loading time of the assigned carrgos
 	int sumlt;
 
@@ -70,6 +88,12 @@ public:
 	PriQueue<cargo*, int> getcargos();
 
 	int getcheckupt();
+
+	//function that sums the Total active time
+	void CalculateActiveTime();
+	
+	//setter
+	void setFT(Time t);
 
 	Time getcheckupentry();
 

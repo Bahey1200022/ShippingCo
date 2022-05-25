@@ -203,6 +203,10 @@ void Company::SaveUp()
 	int totalSimulationTime = currtime.ConvertToHour();
 
 	Time totaltrucksActiveTime;
+	
+	/// ///
+	
+	int AvgAvtiveTime = totaltrucksActiveTime.ConvertToHour();
 
 	if (DelieveredCargos.peek(cPtr))
 	{
@@ -256,6 +260,7 @@ void Company::SaveUp()
 	ofile << "Trucks: " << totalnumtrucks << " [N: " << numtnorm << ", S: " << numtspecial << ", V: " << numtVIP << "]" << endl;
 
 	//Avg Active Time
+	ofile<<
 
 	//Truck Utilization
 }
@@ -827,9 +832,17 @@ void Company::Deliver()
 			{
 
 				//calc delivery interval and returns it
-
 				returningtrucks.enqueueAsc(t, t->getDI());
+
+				//removes the truck from the moving
 				movingtrucks.dequeue(t);
+
+				//sets FT 
+				t->setFT(currtime);
+
+				//Calculating Active Time and adds to the old active times
+				t->CalculateActiveTime();
+
 
 
 			}

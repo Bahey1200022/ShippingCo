@@ -56,6 +56,17 @@ int truck::getcheckupt() {
 	return checkupt;
 }
 
+void truck::CalculateActiveTime()
+{
+	
+	ActiveTime = ActiveTime + (FT - loadingentry);
+}
+
+void truck::setFT(Time t)
+{
+	FT = t;
+}
+
 Time truck::getcheckupentry() { return checkupentry; }
 
 void truck::setcheckupentry(Time t) { checkupentry = t; }
