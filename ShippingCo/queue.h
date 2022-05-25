@@ -145,7 +145,7 @@ void queue<T>::print2() const
 	Node<T>* tmp = front;
 	while (tmp)
 	{
-		char type = tmp->getItem()->getType();;
+		char type = tmp->getItem()->getType();
 
 		switch (type)
 		{
@@ -156,8 +156,9 @@ void queue<T>::print2() const
 			cout << "(";
 			break;
 		case 'V':
-			break;
+			
 			cout << "{";
+			break;
 		default:
 			break;
 		}
@@ -171,8 +172,9 @@ void queue<T>::print2() const
 			cout << ") ";
 			break;
 		case 'V':
-			break;
+			
 			cout << "} ";
+			break;
 		default:
 			break;
 		}

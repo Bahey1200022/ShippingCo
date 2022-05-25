@@ -403,7 +403,7 @@ void Company::assigncargototruck() {
 
 	autopromotion();
 	//checkss if company is in its working hours
-	if (currtime.gethour() > 5 && currtime.gethour() < 23)
+	if (currtime.gethour() >= 5 && currtime.gethour() <= 23)
 	{
 
 		if (!noavailabletruck() && !nocargosleft())
@@ -739,13 +739,14 @@ void Company::Deliver()
 			DelieveredCargos.enqueue(c);
 			totalDeliveredCargos++;
 			//places the truck again in the loading (not moving ??) trucks if it still has cargos to deliver 
+			
 			if (t->getcargoscount() == 0)
 			{
 
 				//calc delivery interval and returns it
 
 				returningtrucks.enqueueAsc(t, t->getDI());
-
+				movingtrucks.dequeue(t);
 
 
 			}
@@ -755,7 +756,7 @@ void Company::Deliver()
 
 				//calculates the CDT for the first cargo in the pQueue
 				t->caculateCDt();
-
+				movingtrucks.dequeue(t);
 				//renters thetruck in the pQueue
 				movingtrucks.enqueueAsc(t, t->getCDT());
 
@@ -810,7 +811,9 @@ void Company::returnTruck()
 					break;
 				}
 			}
+
 		}
+		else break;
 	}
 }
 
