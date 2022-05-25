@@ -14,6 +14,11 @@ public:
 	{
 		calculateTime(d, h);
 	}
+	//convetrs into hours
+	int ConvertToHour()
+	{
+		return(days * 24 + hours);
+	}
 
 	//getters
 	int gethour() const

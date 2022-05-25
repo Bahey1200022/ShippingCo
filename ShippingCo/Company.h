@@ -110,7 +110,7 @@ public:
 	bool Excutevents();
 
 	//saving function
-	bool SaveUp();
+	void SaveUp();
 
 	//searches the normal crgo waiting list for a specific cargo
 	cargo* searchnormc(int id);

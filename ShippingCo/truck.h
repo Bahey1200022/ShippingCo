@@ -33,8 +33,11 @@ class truck
 	int J;
 	//num of journeys the truck performed
 	int journeys;
-	int totaljourneys;//for stats
-	int cargosd;//total c deliv.
+
+	//for stats
+	int totaljourneys;
+	//total c deliv.
+	int cargosd;
 	//moving time
 	Time MT;
 

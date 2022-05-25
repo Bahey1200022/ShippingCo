@@ -189,9 +189,75 @@ void Company::deccargos() {
 	wnumcnorm--;
 }
 
-bool Company::SaveUp()
+void Company::SaveUp()
 {
-	return false;
+	ofstream ofile("output.txt");
+	ofile << "CDT   ID   PT   WT   TID " << endl;
+	cargo* cPtr;
+	int NumNormalCargos = 0;
+	int NumSpecialCargos = 0;
+	int NumVipCargos = 0;
+
+	int TotalCargos = DelieveredCargos.getsize();
+
+	int totalSimulationTime = currtime.ConvertToHour();
+
+	Time totaltrucksActiveTime;
+
+	if (DelieveredCargos.peek(cPtr))
+	{
+
+		while (DelieveredCargos.dequeue(cPtr))
+		{
+			char type = cPtr->getType();
+			Time CDt = cPtr->getCDT();
+			Time PT = cPtr->getpt();
+			int TID = cPtr->getID();
+
+			switch (type)
+			{
+			case'N':
+				NumNormalCargos++;
+				break;
+			case'S':
+				NumSpecialCargos++;
+				break;
+			case'V':
+				NumVipCargos++;
+				break;
+			default:
+				break;
+			}
+
+			ofile << CDt.getDays() << ":" << CDt.gethour() << "   ";
+
+			ofile << cPtr->getID() << "   ";
+
+			ofile << PT.getDays() << ":" << PT.gethour() << "   ";
+
+			/*ofile << WT.getDays() << ":" << WT.gethour() << "   ";*/
+			ofile << TID << endl;
+
+
+		}
+	}
+	ofile << "................................................................" << endl;
+	ofile << "................................................................" << endl;
+	//Prints Cargo Line
+	ofile << "Cargos:" << TotalCargos << " [N: " << NumNormalCargos << ", S: " << NumSpecialCargos << ", V: " << NumVipCargos << "]" << endl;
+
+	//ofile <<"Cargo Avg WT: "<<AvgWT<<endl;
+
+
+	//Prints Percentage of auto promotion
+	ofile << (TotalCargos - autopromotedcargos / TotalCargos) * 100 << "%" << endl;
+
+	//Prints Truck Line
+	ofile << "Trucks: " << totalnumtrucks << " [N: " << numtnorm << ", S: " << numtspecial << ", V: " << numtVIP << "]" << endl;
+
+	//Avg Active Time
+
+	//Truck Utilization
 }
 
 cargo* Company::searchnormc(int id) {//used to promote a cargo by searchung for it
