@@ -120,7 +120,7 @@ public:
 	void setloadentry(Time k);
 
 	Time getDI();
-		//cargo* checkcargodeliv(Time c);//checks if it's time to deq a cargo
+		
 	void setcargotype(char t);
 	char getcargotype();
 

@@ -18,6 +18,7 @@ int main()
 	if (Shipco.startup(ifile))
 	{
 		//gets the interface mode from the user
+
 		Shipco.chooseModee();
 		//Shipco.Excutevents();
 		//still dont know the condition

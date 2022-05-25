@@ -198,7 +198,7 @@ cargo* Company::searchnormc(int id) {//used to promote a cargo by searchung for 
 			cargo* car = wantedcargo->getItem();
 			normcargos.deleteNode(wantedcargo->getItem());
 			numcVIP++;
-			
+
 			wnumcnorm--;
 			return car;
 			break;
@@ -260,18 +260,20 @@ void Company::cancelcargo(int id) {//cancelling a node from a linked list
 bool Company::Excutevents() {
 	bool z = false; //found an even or not
 	events* E;
-	while (eventss.peek(E))
-	{
-		if (E->getET() == currtime)
+	
+		while (eventss.peek(E))
 		{
-			eventss.dequeue(E);
-			E->Excute();
-			z = true;
+			if (E->getET() == currtime)
+			{
+				eventss.dequeue(E);
+				E->Excute();
+				z = true;
+			}
+			else break;
 		}
-		else break;
-	}
-	currtime++;
-	return z;
+		currtime++;
+		return z;
+	
 }
 
 bool Company::nocargosleft() {
@@ -385,7 +387,7 @@ bool Company::noavailabletruck() {
 	return (sptrucks.Isempty() && normtrucks.Isempty() && viptrucks.Isempty());
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//===============================================================================================================================================================================
+//====================================================================================================================================================================
 void Company::assigncargototruck() {
 
 	truckscheckup();
@@ -416,7 +418,7 @@ void Company::assigncargototruck() {
 						}
 						t->setcargotype('V');
 						//insert the truck into the loading truck list
-						
+
 						t->setloadentry(currtime);
 						//calculates the tuck's moving time
 						t->CalculateMovingTime();
@@ -553,7 +555,7 @@ void Company::assigncargototruck() {
 			}
 			//END of Special cargo assigning 
 
-			/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			//normal trucks assiging 
 			//Checks if there are ready normal cargo
 			cargo* l;normcargos.peekList(l);
@@ -607,67 +609,61 @@ void Company::assigncargototruck() {
 						}
 					}
 				}
-					//if there are no available normal trucks check vip trucks
-					///////////////////////////////////////////////////////////////////////////
-					else if (!viptrucks.Isempty())
-					{
+				//if there are no available normal trucks check vip trucks
+				///////////////////////////////////////////////////////////////////////////
+				else if (!viptrucks.Isempty())
+				{
 
-						//checks if the number of normal cargos is equal or more than the truck's capacity
-						if (normcargos.getSize() >= cavip && normcargos.getSize() >= canorm)
+					//checks if the number of normal cargos is equal or more than the truck's capacity
+					if (normcargos.getSize() >= cavip && normcargos.getSize() >= canorm)
+					{
+						truck* t;
+						//removes a VIP truck from the available trucks list
+						viptrucks.dequeue(t);
+						//assigns the cargo to the truck
+						for (int i = 0; i < cavip; i++)
 						{
-							truck* t;
-							//removes a VIP truck from the available trucks list
-							viptrucks.dequeue(t);
-							//assigns the cargo to the truck
-							for (int i = 0; i < cavip; i++)
-							{
-								cargo* c;
-								//removes the cargo from the ready list
-								normcargos.RemoveFirst(c);
-								t->assigncargo(c);
-							}
-								t->setcargotype('N');
-							// insert the truck into the l truck list
+							cargo* c;
+							//removes the cargo from the ready list
+							normcargos.RemoveFirst(c);
+							t->assigncargo(c);
+						}
+						t->setcargotype('N');
+						// insert the truck into the l truck list
+						t->setloadentry(currtime);
+						//calculates the tuck's moving time
+						t->CalculateMovingTime();
+						//inserts the truck in the loading trucks 
+						loadingtrucks.enqueueAsc(t, t->getTimeUntilMoving());
+
+					}
+					else if (l->getwt(currtime) >= maxW) {
+						truck* t;
+						//removes a special truck from the available trucks list
+						viptrucks.dequeue(t);
+						while (l->getwt(currtime) >= maxW) {
+							normcargos.RemoveFirst(l);t->assigncargo(l);
+							t->setcargotype('N');
+							//insert the truck into the loading truck list
 							t->setloadentry(currtime);
 							//calculates the tuck's moving time
 							t->CalculateMovingTime();
 							//inserts the truck in the loading trucks 
 							loadingtrucks.enqueueAsc(t, t->getTimeUntilMoving());
+							if (!normcargos.peekList(l)) break;
 
-						}
-						else if (l->getwt(currtime) >= maxW) {
-							truck* t;
-							//removes a special truck from the available trucks list
-							viptrucks.dequeue(t);
-							while (l->getwt(currtime) >= maxW) {
-								normcargos.RemoveFirst(l);t->assigncargo(l);
-								t->setcargotype('N');
-								//insert the truck into the loading truck list
-								t->setloadentry(currtime);
-								//calculates the tuck's moving time
-								t->CalculateMovingTime();
-								//inserts the truck in the loading trucks 
-								loadingtrucks.enqueueAsc(t, t->getTimeUntilMoving());
-								if (!normcargos.peekList(l)) break;
-
-							}
 						}
 					}
 				}
-				//End of normal cargos assigning  
-
-
-
-
-
-
-
-
-
-
-
-
 			}
+			//End of normal cargos assigning  
+
+
+
+
+
+
+
 
 
 
@@ -675,8 +671,14 @@ void Company::assigncargototruck() {
 
 		}
 
+
+
+
+
 	}
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+}
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void Company::movetruck() {
 	truck* t;
@@ -698,7 +700,7 @@ void Company::movetruck() {
 
 
 			//gets the cargo that will be delivered firstly
-			
+
 			movingtrucks.enqueueAsc(t, t->getCDT());
 			/*movingtrucks.enqueueAsc(t, t->DI());*/
 		}
@@ -714,7 +716,7 @@ void Company::Deliver()
 {
 	truck* t;
 	cargo* c;
-	while (loadingtrucks.peek(t))
+	while (movingtrucks.peek(t))
 	{
 		Time CDT;
 		CDT = t->getCDT();
@@ -728,15 +730,15 @@ void Company::Deliver()
 			DelieveredCargos.enqueue(c);
 			totalDeliveredCargos++;
 			//places the truck again in the loading (not moving ??) trucks if it still has cargos to deliver 
-			if (t->getqcargos().size()==0)
+			if (t->getqcargos().size() == 0)
 			{
 
 				//calc delivery interval and returns it
-				
-				returningtrucks.enqueueAsc(t,t->getDI());
 
-;
-				
+				returningtrucks.enqueueAsc(t, t->getDI());
+
+
+
 			}
 			else
 			{
@@ -763,49 +765,49 @@ void Company::returnTruck()
 		{
 			char type = tPtr->getType();
 			int j = tPtr->gettotalj();
-			
-			//checks if the truck must be maintained
-				if ( j != tPtr->getj()) {
-					switch (type)
-					{
-					case 'N':
-						normtrucks.enqueue(tPtr);
-						break;
-					case'S':
-						sptrucks.enqueue(tPtr);
-						break;
-					case'V':
-						viptrucks.enqueue(tPtr);
-						break;
-					default:
-						break;
-					}
 
-				}
-				else 
+			//checks if the truck must be maintained
+			if (j != tPtr->getj()) {
+				switch (type)
 				{
-					switch (type)
-					{
-					case 'N':
-						checkuptnormal.enqueue(tPtr);
-						break;
-					case'S':
-						checkuptspecial.enqueue(tPtr);
-						break;
-					case'V':
-						checkuptvip.enqueue(tPtr);
-						break;
-					default:
-						break;
-					}
+				case 'N':
+					normtrucks.enqueue(tPtr);
+					break;
+				case'S':
+					sptrucks.enqueue(tPtr);
+					break;
+				case'V':
+					viptrucks.enqueue(tPtr);
+					break;
+				default:
+					break;
+				}
+
+			}
+			else
+			{
+				switch (type)
+				{
+				case 'N':
+					checkuptnormal.enqueue(tPtr);
+					break;
+				case'S':
+					checkuptspecial.enqueue(tPtr);
+					break;
+				case'V':
+					checkuptvip.enqueue(tPtr);
+					break;
+				default:
+					break;
+				}
 			}
 		}
 	}
 }
 
-bool Company ::operate(){ 
+bool Company::operate() {
 	return(!nocargosleft() && !loadingtrucks.isEmpty() && !movingtrucks.isEmpty());
-		
+
 }
 
 void Company::PrintWaitingCargos()
@@ -853,9 +855,9 @@ void Company::PrintLoadingTrucks()
 	uiPtr->printData(" ");
 	uiPtr->printData("Loading Trucks: ");
 
-	
+
 	loadingtrucks.PrintTruck();
-	
+
 
 
 }
@@ -890,13 +892,13 @@ void Company::PrintEmptyTrucks()
 
 }
 
-void Company::PrintMovingCargos() //
+void Company::PrintMovingCargos()
 {
-	int TotatmovingTrucks =movingtrucks.size();
+	int TotatmovingTrucks = movingtrucks.size();
 	uiPtr->printData(TotatmovingTrucks);
 	uiPtr->printData(" ");
 	uiPtr->printData("moving cargos: ");
-
+	//movingtrucks.Print();
 
 	movingtrucks.PrintTruck();
 }
@@ -911,7 +913,7 @@ void Company::PrintInCheckupTrucks()
 	//prints Normal trucks in checkUps
 	uiPtr->printData("[");
 	checkuptnormal.print();
-		uiPtr->printData("] ");
+	uiPtr->printData("] ");
 
 	//prints Special trucks
 	uiPtr->printData("(");
@@ -924,17 +926,17 @@ void Company::PrintInCheckupTrucks()
 	uiPtr->printData("} ");
 
 
-	
+
 }
 
 void Company::PrintDeliveredCargos()
 {
-	
+
 	//total delivered
 	int TotalDeliveredCargos = DelieveredCargos.getsize();
 	uiPtr->printData(TotalDeliveredCargos);
 	uiPtr->printData(" ");
-	uiPtr->printData("Delivered Cargo: ");
+	uiPtr->printData("Delivered Cargos: ");
 
 	//Prints Delivered cargos in order of delivery 
 	DelieveredCargos.print2();

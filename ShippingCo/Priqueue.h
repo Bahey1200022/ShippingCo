@@ -62,6 +62,9 @@ bool PriQueue<T, U>::enqueueAsc(const T& newEntry, U priority)
 		tmp->setNext(q->getNext());
 		q->setNext(tmp);
 	}
+	priorityN<T, U>* t = frontPtr;
+	while (t->getNext()) { t = t->getNext(); }
+	backPtr = t;
 	Count++;
 	return true;
 }
@@ -86,6 +89,9 @@ bool PriQueue<T, U>::enqueueDesc(const T& newEntry, U priority)
 		tmp->setNext(q->getNext());
 		q->setNext(tmp);
 	}
+	priorityN<T, U>* t = frontPtr;
+	while (t->getNext()) { t = t->getNext(); }
+	backPtr = t;
 	Count++;
 	return true;
 }
@@ -200,7 +206,7 @@ template<typename T, typename U>///for the cargos
 void PriQueue<T, U>::Print1() const
 {
 	priorityN<T, U>* tmp = frontPtr;
-	
+
 	char type = tmp->getItem()->getType();
 	switch (type)
 	{
@@ -211,7 +217,7 @@ void PriQueue<T, U>::Print1() const
 		cout << "(";
 		break;
 	case 'V':
-		
+
 		cout << "{";
 		break;
 	default:
@@ -221,7 +227,7 @@ void PriQueue<T, U>::Print1() const
 	{
 
 
-		
+
 		cout << tmp->getItem()->getID() << ", ";
 		tmp = tmp->getNext();
 	}
@@ -234,7 +240,7 @@ void PriQueue<T, U>::Print1() const
 		cout << ") ";
 		break;
 	case 'V':
-		
+
 		cout << "} ";
 		break;
 	default:
@@ -251,7 +257,7 @@ void PriQueue<T, U>::PrintTruck() const
 	{
 		cout << tmp->getItem()->getID();
 		tmp->getItem()->PrintCargos();
-			cout<< " ";
-			tmp = tmp->getNext();
+		cout << " ";
+		tmp = tmp->getNext();
 	}
 }

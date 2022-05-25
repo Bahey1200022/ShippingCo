@@ -128,12 +128,7 @@ void truck::DI(Time currTime) {
 
 }
 int truck::getltsum() {
-	/*PriQueue<cargo*>q(cargosassigned);
-	int c = 0;
-	cargo* f;
-	while (q.dequeue(f)) {
-		c = c + f->getlt();
-	}*/
+	
 	return sumlt;
 }
 
@@ -194,4 +189,5 @@ PriQueue<cargo*, int> truck::getqcargos() { return cargosassigned; }
 
 truck::~truck()
 {
+	////////////////////////////////////////////////////////////////////
 }
