@@ -260,7 +260,7 @@ void Company::SaveUp()
 	ofile << "Trucks: " << totalnumtrucks << " [N: " << numtnorm << ", S: " << numtspecial << ", V: " << numtVIP << "]" << endl;
 
 	//Avg Active Time
-	ofile<<
+	//ofile<<
 
 	//Truck Utilization
 }

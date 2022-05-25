@@ -35,18 +35,12 @@ class truck
 	//time at which the truck must return to the company
 	Time Di;
 
-	//the time at which the truck enters the loading queue
-	Time loadingentry;
-
 	//time the truck entered checkUp
 	Time checkupentry;
 
 	//finish time (the time the truck finishes delivering)
 	Time FT;
-
-	//time at which the truck must return to the company
-	Time Di;
-
+	
 	char truckstatus;
 
 	//cargos assigned to the truck
