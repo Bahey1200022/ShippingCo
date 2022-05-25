@@ -132,6 +132,9 @@ public:
 	//loading q entry time +loading time
 	Time getMT();
 
+	//get Active Time
+	Time getActiveTime();
+
 	//calculates the time until Mt in hours 
 	void CalculateTimeUntilMoving(const Time& currtime);
 	PriQueue<cargo*, int> getqcargos();
@@ -153,5 +156,6 @@ public:
 
 	void incrementjourneys();
 	void incrementcargosd();
+
 	~truck();
 };

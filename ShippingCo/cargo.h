@@ -24,6 +24,9 @@ class cargo
 	truck* truckassi;
 	//Waiting Time
 	Time WT;
+
+	//moving time
+	Time MT;
 	//priority
 	int p;
 	//calcultate waiting TIme
@@ -49,9 +52,11 @@ public:
 	int getcost();
 	int getlt();
 	Time getCDT();
+	Time getMT();
 
 	truck* gettruck();
 
+	Time CalculateWT();
 	Time getpt();
 
 	int getP();
@@ -59,7 +64,7 @@ public:
 	//setters 
 	void settype();
 	void setCDT(Time t);
-	
+	void setMT(Time t);
 	void settruckid(int);
 
 

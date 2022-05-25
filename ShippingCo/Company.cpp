@@ -191,78 +191,212 @@ void Company::deccargos() {
 
 void Company::SaveUp()
 {
-	ofstream ofile("output.txt");
-	ofile << "CDT   ID   PT   WT   TID " << endl;
+	//creates ofstream object
+	ofstream ofile;
+	ofile.open("output.txt");
+
 	cargo* cPtr;
-	int NumNormalCargos = 0;
-	int NumSpecialCargos = 0;
-	int NumVipCargos = 0;
-
-	int TotalCargos = DelieveredCargos.getsize();
-
-	int totalSimulationTime = currtime.ConvertToHour();
-
-	Time totaltrucksActiveTime;
-	
-	/// ///
-	
-	int AvgAvtiveTime = totaltrucksActiveTime.ConvertToHour();
-
-	if (DelieveredCargos.peek(cPtr))
+	truck* tPtr;
+	//checks if file is open
+	if (ofile.is_open())
 	{
+		ofile << "CDT   ID   PT   WT   TID " << endl;
 
-		while (DelieveredCargos.dequeue(cPtr))
+
+		//total no of cargos delivered
+		int TotalCargos = DelieveredCargos.getsize();
+
+		//total No.s of each type of cargo
+		int NumNormalCargos = 0;
+		int NumSpecialCargos = 0;
+		int NumVipCargos = 0;
+
+		//total waiting time of all cargos
+		Time totalWT;
+
+		//avg waiting time 
+		Time AvgWaitingTime;
+
+		
+
+		//total simulation time
+		int totalSimulationTime = currtime.ConvertToHour();
+
+		//total Active time of all trucks(in hours)
+		int totaltrucksActiveTime = 0;
+
+		//avg active time of all trucks(in hours)
+		int AvgTruckActiveTime;
+
+		//total truck utilization (in hrs)
+		int TotalTruckUtil = 0;
+
+		//AVg truck utilization
+		int Avgtruckutilization;
+
+		//temp queues
+		queue<truck*> tempNormal(normtrucks);
+		queue<truck*> tempSpecial(sptrucks);
+		queue<truck*> tempVip(viptrucks);
+
+		while (tempNormal.dequeue(tPtr))
 		{
-			char type = cPtr->getType();
-			Time CDt = cPtr->getCDT();
-			Time PT = cPtr->getpt();
-			int TID = cPtr->getID();
+			//calculates total active time of normal trucks
+			Time t1 = tPtr->getActiveTime();
+			int TruckActiveTime = t1.ConvertToHour();
+			totaltrucksActiveTime = totaltrucksActiveTime + TruckActiveTime;
 
-			switch (type)
-			{
-			case'N':
-				NumNormalCargos++;
-				break;
-			case'S':
-				NumSpecialCargos++;
-				break;
-			case'V':
-				NumVipCargos++;
-				break;
-			default:
-				break;
-			}
+			//calculates total truck utilization
+			
+			//total cargos delivered by this truck
+			int tDC = tPtr->gettotalcargosd();
+			int N = tPtr->gettotaljourneys();
 
-			ofile << CDt.getDays() << ":" << CDt.gethour() << "   ";
+		//truck utuilziation of this truck (perecentage)
+			int TruckUtili=(tDC / (canorm * N))* (TruckActiveTime / totalSimulationTime);
 
-			ofile << cPtr->getID() << "   ";
-
-			ofile << PT.getDays() << ":" << PT.gethour() << "   ";
-
-			/*ofile << WT.getDays() << ":" << WT.gethour() << "   ";*/
-			ofile << TID << endl;
-
+			//total truck utilization
+			TotalTruckUtil = TotalTruckUtil + TruckUtili;
 
 		}
+		while (tempSpecial.dequeue(tPtr))
+		{
+			//calculates total active time of special trucks
+
+			Time t1 = tPtr->getActiveTime();
+			int TruckActiveTime = t1.ConvertToHour();
+			totaltrucksActiveTime = totaltrucksActiveTime + TruckActiveTime;
+
+			//calculates total truck utilization
+
+			//total cargos delivered by this truck
+			int tDC = tPtr->gettotalcargosd();
+			int N = tPtr->gettotaljourneys();
+
+			//truck utuilziation of this truck (perecentage)
+			int TruckUtili = (tDC / (casp * N)) * (TruckActiveTime / totalSimulationTime);
+
+			//total truck utilization(as a percentage)
+			TotalTruckUtil = TotalTruckUtil + TruckUtili;
+		}
+		while (tempVip.dequeue(tPtr))
+		{
+			//calculates total active time of vip trucks
+			Time t1 = tPtr->getActiveTime();
+			int TruckActiveTime = t1.ConvertToHour();
+			totaltrucksActiveTime = totaltrucksActiveTime + TruckActiveTime;
+
+			//calculates total truck utilization
+
+			//total cargos delivered by this truck
+			int tDC = tPtr->gettotalcargosd();
+			int N = tPtr->gettotaljourneys();
+
+			//truck utuilziation of this truck (perecentage)
+			int TruckUtili = (tDC / (cavip * N)) * (TruckActiveTime / totalSimulationTime);
+
+			//total truck utilization(as a percentage)
+			TotalTruckUtil = TotalTruckUtil + TruckUtili;
+
+		}
+
+
+
+		//prints cargo statistics
+
+			while (DelieveredCargos.dequeue(cPtr))
+			{
+				//type of cargo
+				char type = cPtr->getType();
+
+				//Cargo delivery time
+				Time CDt = cPtr->getCDT();
+
+				//cargo Preparation time
+				Time PT = cPtr->getpt();
+
+				//truck id that delivered the cargo
+				int TID = cPtr->getID();
+
+				//cargo waiting time
+				Time WT = cPtr->CalculateWT();
+
+				//total waiting time of all cargos(Time object)
+				totalWT = totalWT + WT;
+
+				//counts the no of each type of cargos
+				switch (type)
+				{
+				case'N':
+					NumNormalCargos++;
+					break;
+				case'S':
+					NumSpecialCargos++;
+					break;
+				case'V':
+					NumVipCargos++;
+					break;
+				default:
+					break;
+				}
+
+				//prints CDT
+				ofile << CDt.getDays() << ":" << CDt.gethour() << "   ";
+
+				//prints cargo id
+				ofile << cPtr->getID() << "   ";
+
+				//prints Preparation time
+				ofile << PT.getDays() << ":" << PT.gethour() << "   ";
+
+				//prints waiting time
+				ofile << WT.getDays() << ":" << WT.gethour() << "   ";
+
+				//prints the id of the truck that delivered the cargo
+				ofile << TID << endl;
+
+
+			}
+		
+		ofile << "................................................................" << endl;
+		ofile << "................................................................" << endl;
+
+		//Prints Cargo Line
+		ofile << "Cargos:" << TotalCargos << " [N: " << NumNormalCargos << ", S: " << NumSpecialCargos << ", V: " << NumVipCargos << "]" << endl;
+
+		//calculate avg waiting time(in hours)
+		int AvgWTHours = (totalWT.ConvertToHour()) / TotalCargos;
+
+		//converts active waiting time to a time object
+		AvgWaitingTime.calculateTime(0, AvgWTHours);
+
+		//prints Cargo avg waiting time
+	    ofile <<"Cargo Avg WT : "<<AvgWaitingTime.getDays()<<":"<<AvgWaitingTime.gethour() << endl;
+
+
+		//Prints Percentage of auto promotion
+		ofile << (TotalCargos - autopromotedcargos / TotalCargos) * 100 << "%" << endl;
+
+		//Prints Truck Line
+		ofile << "Trucks: " << totalnumtrucks << " [N: " << numtnorm << ", S: " << numtspecial << ", V: " << numtVIP << "]" << endl;
+
+		//prints Avg Active Time as a percentage
+		AvgTruckActiveTime = (100 / totalSimulationTime)*(totaltrucksActiveTime) / TotalCargos;
+		ofile << "Avg Active Time= " << AvgTruckActiveTime << "%" << endl;
+
+		//print average Truck  Utilization (as a percentage)
+
+		Avgtruckutilization = TotalTruckUtil / totalnumtrucks;
+		ofile << "Avg Utilization= " << Avgtruckutilization << "%" << endl;
+
+
+		ofile.close();
 	}
-	ofile << "................................................................" << endl;
-	ofile << "................................................................" << endl;
-	//Prints Cargo Line
-	ofile << "Cargos:" << TotalCargos << " [N: " << NumNormalCargos << ", S: " << NumSpecialCargos << ", V: " << NumVipCargos << "]" << endl;
-
-	//ofile <<"Cargo Avg WT: "<<AvgWT<<endl;
-
-
-	//Prints Percentage of auto promotion
-	ofile << (TotalCargos - autopromotedcargos / TotalCargos) * 100 << "%" << endl;
-
-	//Prints Truck Line
-	ofile << "Trucks: " << totalnumtrucks << " [N: " << numtnorm << ", S: " << numtspecial << ", V: " << numtVIP << "]" << endl;
-
-	//Avg Active Time
-	//ofile<<
-
-	//Truck Utilization
+	else
+	{
+		uiPtr->printData("Error output file not created");
+		uiPtr->endline();
+	}
 }
 
 cargo* Company::searchnormc(int id) {//used to promote a cargo by searchung for it
@@ -485,25 +619,41 @@ void Company::assigncargototruck() {
 				//check vip cargos
 
 				if (!viptrucks.Isempty()) {
-					if (vipcargos.size() >= cavip) {
+					if (vipcargos.size() >= cavip)
+					{
 						///loading rule
 						truck* t;
+
 						//removes Vip truck from ready trucks list
 						viptrucks.dequeue(t);
 
-						for (int i = 0; i < cavip; i++) {
+						
+
+						for (int i = 0; i < cavip; i++) 
+						{
 							cargo* c;
 							vipcargos.dequeue(c);
-							t->assigncargo(c);
-							t->incrementcargosd();
-							c->settruckid(t->getID());
-						}
-						t->setcargotype('V');
-						//insert the truck into the loading truck list
 
-						t->setloadentry(currtime);
-						//calculates the tuck's moving time
-						t->CalculateMovingTime();
+							t->assigncargo(c);
+
+							//insert the truck into the loading truck list
+							t->setloadentry(currtime);
+
+							//calculates the tuck's moving time
+							t->CalculateMovingTime();
+
+							t->incrementcargosd();
+
+							c->settruckid(t->getID());
+
+							c->setMT(t->getMT());
+						}
+
+						t->setcargotype('V');
+						
+
+						
+
 						//inserts the truck in the loading trucks 
 						loadingtrucks.enqueueAsc(t, t->getTimeUntilMoving());
 
@@ -523,6 +673,8 @@ void Company::assigncargototruck() {
 						truck* t;
 						//removes normal truck from ready trucks' list
 						normtrucks.dequeue(t);
+						
+						
 
 						//assign the cargos to the truck 
 						for (int i = 0; i < canorm; i++)
@@ -530,15 +682,23 @@ void Company::assigncargototruck() {
 							cargo* c;
 							//removes VIP cargos from ready VIP cargo list
 							vipcargos.dequeue(c);
+
 							t->assigncargo(c);
+
+							//insert the truck into the loading truck list
+							t->setloadentry(currtime);
+							//calculates the tuck's moving time
+							t->CalculateMovingTime();
+
 							t->incrementcargosd();
+
 							c->settruckid(t->getID());
+
+							c->setMT(t->getMT());
 						}
 						t->setcargotype('V');
-						//insert the truck into the loading truck list
-						t->setloadentry(currtime);
-						//calculates the tuck's moving time
-						t->CalculateMovingTime();
+						
+						
 						//inserts the truck in the loading trucks 
 						loadingtrucks.enqueueAsc(t, t->getTimeUntilMoving());
 
@@ -558,21 +718,33 @@ void Company::assigncargototruck() {
 						//removes Special truck from ready trucks list
 						sptrucks.dequeue(t);
 						//assign the cargos to the truck 
+
+						
+
 						for (int i = 0; i < casp; i++)
 						{
 							cargo* c;
+
 							//removes VIP cargos from ready VIP cargo list
 							vipcargos.dequeue(c);
-							t->assigncargo(c);
-							t->incrementcargosd();
-							c->settruckid(t->getID());
-						}
-						t->setcargotype('V');
-						//insert the truck into the loading truck list
-						t->setloadentry(currtime);
 
-						//calculates the tuck's moving time
-						t->CalculateMovingTime();
+							t->assigncargo(c);
+
+							//insert the truck into the loading truck list
+							t->setloadentry(currtime);
+
+							//calculates the tuck's moving time
+							t->CalculateMovingTime();
+
+							t->incrementcargosd();
+
+							c->settruckid(t->getID());
+
+							c->setMT(t->getMT());
+						}
+
+						t->setcargotype('V');
+						
 						//inserts the truck in the loading trucks 
 						loadingtrucks.enqueueAsc(t, t->getTimeUntilMoving());
 
@@ -589,7 +761,9 @@ void Company::assigncargototruck() {
 			////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			//Special trucks assiging 
 			//Checks if there are ready special cargo
-			cargo* h;spcargos.peek(h);
+			cargo* h;
+			spcargos.peek(h);
+
 			if (!spcargos.Isempty())
 			{
 				//checks if there is an available special truck
@@ -599,45 +773,79 @@ void Company::assigncargototruck() {
 					if (spcargos.getsize() >= casp)
 					{
 						truck* t;
+
 						//removes a special truck from the available trucks list
 						sptrucks.dequeue(t);
+
 						//assigns the cargo to the truck
+
+						
 						for (int i = 0; i < casp; i++)
 						{
 							cargo* c;
+
 							//removes the cargo from the ready list
 							spcargos.dequeue(c);
+
 							t->assigncargo(c);
+
+							//insert the truck into the loading truck list
+							t->setloadentry(currtime);
+
+							//calculates the tuck's moving time
+							t->CalculateMovingTime();
+
+
 							t->incrementcargosd();
+
 							c->settruckid(t->getID());
+
+							c->setMT(t->getMT());
+
 						}
 						t->setcargotype('S');
-						//insert the truck into the loading truck list
-						t->setloadentry(currtime);
-						//calculates the tuck's moving time
-						t->CalculateMovingTime();
+						
 						//inserts the truck in the loading trucks 
 						loadingtrucks.enqueueAsc(t, t->getTimeUntilMoving());
 
 
 					}
-					else if (h->getwt(currtime) >= maxW) {
+					else if (h->getwt(currtime) >= maxW)
+					{
 						truck* t;
+
 						//removes a special truck from the available trucks list
 						sptrucks.dequeue(t);
-						while (h->getwt(currtime) >= maxW) {
-							spcargos.dequeue(h);t->assigncargo(h);
-							t->setcargotype('S');
+
+						
+						while (h->getwt(currtime) >= maxW)
+						{
+
+							t->assigncargo(h);
+
 							//insert the truck into the loading truck list
 							t->setloadentry(currtime);
+
 							//calculates the tuck's moving time
 							t->CalculateMovingTime();
-							//inserts the truck in the loading trucks 
-							loadingtrucks.enqueueAsc(t, t->getTimeUntilMoving());
+
+
+							h->setMT(t->getMT());
+
+
+		
 							t->incrementcargosd();
+
 							h->settruckid(t->getID());
-							if (!spcargos.peek(h)) break;
+
+							if (!spcargos.peek(h))
+								break;
 						}
+
+						t->setcargotype('S');
+
+						//inserts the truck in the loading trucks 
+						loadingtrucks.enqueueAsc(t, t->getTimeUntilMoving());
 					}
 
 				}
@@ -647,7 +855,8 @@ void Company::assigncargototruck() {
 			//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			//normal trucks assiging 
 			//Checks if there are ready normal cargo
-			cargo* l;normcargos.peekList(l);
+			cargo* l;
+			normcargos.peekList(l);
 
 			if (normcargos.getSize() != 0)
 			{
@@ -661,45 +870,78 @@ void Company::assigncargototruck() {
 						truck* t;
 						//removes a normal truck from the available trucks list
 						normtrucks.dequeue(t);
+
+
+						
+
 						//assigns the cargo to the truck
 						for (int i = 0; i < canorm; i++)
 						{
 							cargo* c;
 							//removes the cargo from the waiting list
 							normcargos.RemoveFirst(c);
+
 							t->assigncargo(c);
+
+							// insert the truck into the l. truck list
+							t->setloadentry(currtime);
+
+							//calculates the tuck's moving time
+							t->CalculateMovingTime();
+
 							t->incrementcargosd();
+
 							c->settruckid(t->getID());
 
+							c->setMT(t->getMT());
+
 						}
+
 						t->setcargotype('N');
-						// insert the truck into the l. truck list
-						t->setloadentry(currtime);
-						//calculates the tuck's moving time
-						t->CalculateMovingTime();
+
 						//inserts the truck in the loading trucks 
 						loadingtrucks.enqueueAsc(t, t->getTimeUntilMoving());
 
 
 					}
-					else if (l->getwt(currtime) >= maxW) {
+					else if (l->getwt(currtime) >= maxW) 
+					{
 						truck* t;
+
 						//removes a special truck from the available trucks list
 						normtrucks.dequeue(t);
-						while (l->getwt(currtime) >= maxW) {
-							normcargos.RemoveFirst(l);t->assigncargo(l);
+
+						while (l->getwt(currtime) >= maxW)
+						{
+							normcargos.RemoveFirst(l);
+
+							t->assigncargo(l);
+
 							//insert the truck into the loading truck list
-							t->setcargotype('N');
+							
+
 							t->setloadentry(currtime);
+
 							//calculates the tuck's moving time
 							t->CalculateMovingTime();
-							//inserts the truck in the loading trucks 
-							loadingtrucks.enqueueAsc(t, t->getTimeUntilMoving());
+
+
+							l->setMT(t->getMT());
+
+							
 							t->incrementcargosd();
+
 							l->settruckid(t->getID());
-							if (!normcargos.peekList(l)) break;
+
+							if (!normcargos.peekList(l))
+								break;
 
 						}
+						t->setcargotype('N');
+
+						//inserts the truck in the loading trucks 
+						loadingtrucks.enqueueAsc(t, t->getTimeUntilMoving());
+
 					}
 				}
 				//if there are no available normal trucks check vip trucks
@@ -711,45 +953,69 @@ void Company::assigncargototruck() {
 					if (normcargos.getSize() >= cavip && normcargos.getSize() >= canorm)
 					{
 						truck* t;
+
 						//removes a VIP truck from the available trucks list
 						viptrucks.dequeue(t);
+
 						//assigns the cargo to the truck
 						for (int i = 0; i < cavip; i++)
 						{
 							cargo* c;
+
 							//removes the cargo from the ready list
 							normcargos.RemoveFirst(c);
 							t->assigncargo(c);
+
+							// insert the truck into the l truck list
+							t->setloadentry(currtime);
+
+							//calculates the tuck's moving time
+							t->CalculateMovingTime();
+
 							t->incrementcargosd();
+
 							c->settruckid(t->getID());
 						}
+
 						t->setcargotype('N');
-						// insert the truck into the l truck list
-						t->setloadentry(currtime);
-						//calculates the tuck's moving time
-						t->CalculateMovingTime();
+
 						//inserts the truck in the loading trucks 
 						loadingtrucks.enqueueAsc(t, t->getTimeUntilMoving());
 
 					}
-					else if (l->getwt(currtime) >= maxW) {
+					else if (l->getwt(currtime) >= maxW)
+					{
 						truck* t;
+
 						//removes a special truck from the available trucks list
 						viptrucks.dequeue(t);
-						while (l->getwt(currtime) >= maxW) {
-							normcargos.RemoveFirst(l);t->assigncargo(l);
-							t->setcargotype('N');
+
+						while (l->getwt(currtime) >= maxW)
+						{
+							normcargos.RemoveFirst(l);
+
+							t->assigncargo(l);
+
+							
 							//insert the truck into the loading truck list
 							t->setloadentry(currtime);
+
 							//calculates the tuck's moving time
 							t->CalculateMovingTime();
-							//inserts the truck in the loading trucks 
-							loadingtrucks.enqueueAsc(t, t->getTimeUntilMoving());
+
+							
 							t->incrementcargosd();
+
 							l->settruckid(t->getID());
-							if (!normcargos.peekList(l)) break;
+
+							if (!normcargos.peekList(l)) 
+								break;
 
 						}
+						t->setcargotype('N');
+
+						//inserts the truck in the loading trucks 
+						loadingtrucks.enqueueAsc(t, t->getTimeUntilMoving());
 					}
 				}
 			}

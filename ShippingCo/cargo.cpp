@@ -30,6 +30,11 @@ Time cargo::getCDT()
 	return CDT;
 }
 
+Time cargo::getMT()
+{
+	return MT;
+}
+
 int cargo::getP() { calcP(); return p; }
 
 truck* cargo::gettruck() { return truckassi; }
@@ -45,12 +50,23 @@ void cargo::setCDT(Time t)
 	CDT = t;
 }
 
+void cargo::setMT(Time t)
+{
+	MT = t;
+}
+
 void cargo::settruckid(int c)
 {
 	truckid = c;
 }
 
 void cargo::calcP() { p = Cost / (2*dist + LT); }
+
+Time cargo::CalculateWT()
+{
+	WT = MT - PT;
+	return WT;
+}
 
 Time cargo::getpt() { return PT; }
 

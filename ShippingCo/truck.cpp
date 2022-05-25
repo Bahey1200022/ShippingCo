@@ -160,6 +160,11 @@ Time truck::getMT() {
 
 }
 
+Time truck::getActiveTime()
+{
+	return ActiveTime;
+}
+
 void truck::CalculateTimeUntilMoving(const Time& currtime)
 {
 	//truck's moving time
@@ -177,7 +182,6 @@ void truck::CalculateTimeUntilMoving(const Time& currtime)
 int truck::getTimeUntilMoving()
 {
 	return TimeUntilMoving;
-	return 0;
 }
 
 Time truck::getloadentry() {
