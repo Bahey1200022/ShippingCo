@@ -37,6 +37,8 @@ truck::truck(char t, int c, int s, int jbc, int ti) : ID(id) {
 	journeys = 0;
 	sumlt = 0;
 	cargoscontained = 0;
+	cargosd = 0;
+	totaljourneys = 0;
 
 }
 
@@ -185,10 +187,31 @@ Time truck::getDI()
 void truck::setcargotype(char t) { cargotype = t; }
 char truck::getcargotype() { return cargotype; }
 
+int truck::gettotaljourneys()
+{
+	return totaljourneys;
+}
+
+int truck::gettotalcargosd()
+{
+	return cargosd;
+}
+
 PriQueue<cargo*, int> truck::getqcargos() { return cargosassigned; }
 
 
 
+
+void truck::incrementjourneys()
+{
+	totaljourneys++;
+	journeys++;
+}
+
+void truck::incrementcargosd()
+{
+	cargosd++;
+}
 
 truck::~truck()
 {

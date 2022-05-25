@@ -35,6 +35,8 @@ class cargo
 	//calculate cargo Delivery Time
 	void calcCDT();
 
+	int truckid;
+
 public:
 	//constructors
 	cargo();
@@ -53,10 +55,12 @@ public:
 	Time getpt();
 
 	int getP();
-
+	int getwt(Time c);
 	//setters 
 	void settype();
 	void setCDT(Time t);
-	int getwt(Time c);
+	
+	void settruckid(int);
+
 
 };

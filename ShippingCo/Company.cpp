@@ -424,6 +424,8 @@ void Company::assigncargototruck() {
 							cargo* c;
 							vipcargos.dequeue(c);
 							t->assigncargo(c);
+							t->incrementcargosd();
+							c->settruckid(t->getID());
 						}
 						t->setcargotype('V');
 						//insert the truck into the loading truck list
@@ -458,6 +460,8 @@ void Company::assigncargototruck() {
 							//removes VIP cargos from ready VIP cargo list
 							vipcargos.dequeue(c);
 							t->assigncargo(c);
+							t->incrementcargosd();
+							c->settruckid(t->getID());
 						}
 						t->setcargotype('V');
 						//insert the truck into the loading truck list
@@ -489,6 +493,8 @@ void Company::assigncargototruck() {
 							//removes VIP cargos from ready VIP cargo list
 							vipcargos.dequeue(c);
 							t->assigncargo(c);
+							t->incrementcargosd();
+							c->settruckid(t->getID());
 						}
 						t->setcargotype('V');
 						//insert the truck into the loading truck list
@@ -531,6 +537,8 @@ void Company::assigncargototruck() {
 							//removes the cargo from the ready list
 							spcargos.dequeue(c);
 							t->assigncargo(c);
+							t->incrementcargosd();
+							c->settruckid(t->getID());
 						}
 						t->setcargotype('S');
 						//insert the truck into the loading truck list
@@ -555,7 +563,8 @@ void Company::assigncargototruck() {
 							t->CalculateMovingTime();
 							//inserts the truck in the loading trucks 
 							loadingtrucks.enqueueAsc(t, t->getTimeUntilMoving());
-
+							t->incrementcargosd();
+							h->settruckid(t->getID());
 							if (!spcargos.peek(h)) break;
 						}
 					}
@@ -588,6 +597,8 @@ void Company::assigncargototruck() {
 							//removes the cargo from the waiting list
 							normcargos.RemoveFirst(c);
 							t->assigncargo(c);
+							t->incrementcargosd();
+							c->settruckid(t->getID());
 
 						}
 						t->setcargotype('N');
@@ -613,6 +624,8 @@ void Company::assigncargototruck() {
 							t->CalculateMovingTime();
 							//inserts the truck in the loading trucks 
 							loadingtrucks.enqueueAsc(t, t->getTimeUntilMoving());
+							t->incrementcargosd();
+							l->settruckid(t->getID());
 							if (!normcargos.peekList(l)) break;
 
 						}
@@ -636,6 +649,8 @@ void Company::assigncargototruck() {
 							//removes the cargo from the ready list
 							normcargos.RemoveFirst(c);
 							t->assigncargo(c);
+							t->incrementcargosd();
+							c->settruckid(t->getID());
 						}
 						t->setcargotype('N');
 						// insert the truck into the l truck list
@@ -659,6 +674,8 @@ void Company::assigncargototruck() {
 							t->CalculateMovingTime();
 							//inserts the truck in the loading trucks 
 							loadingtrucks.enqueueAsc(t, t->getTimeUntilMoving());
+							t->incrementcargosd();
+							l->settruckid(t->getID());
 							if (!normcargos.peekList(l)) break;
 
 						}
@@ -667,7 +684,7 @@ void Company::assigncargototruck() {
 			}
 			//End of normal cargos assigning  
 
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
@@ -709,7 +726,7 @@ void Company::movetruck() {
 
 			
 			//gets the cargo that will be delivered firstly
-
+			t->incrementjourneys();
 			movingtrucks.enqueueAsc(t, t->getCDT());
 			/*movingtrucks.enqueueAsc(t, t->DI());*/
 		}
@@ -775,7 +792,7 @@ void Company::returnTruck()
 		{
 			char type = tPtr->getType();
 			int j = tPtr->gettotalj();
-
+			returningtrucks.dequeue(tPtr);
 			//checks if the truck must be maintained
 			if (j != tPtr->getj()) {
 				switch (type)

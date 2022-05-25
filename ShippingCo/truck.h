@@ -33,7 +33,8 @@ class truck
 	int J;
 	//num of journeys the truck performed
 	int journeys;
-
+	int totaljourneys;//for stats
+	int cargosd;//total c deliv.
 	//moving time
 	Time MT;
 
@@ -125,5 +126,11 @@ public:
 	void setcargotype(char t);
 	char getcargotype();
 
+
+	int gettotaljourneys();
+	int gettotalcargosd();
+
+	void incrementjourneys();
+	void incrementcargosd();
 	~truck();
 };

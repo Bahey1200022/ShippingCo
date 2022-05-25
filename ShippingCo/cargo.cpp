@@ -45,6 +45,11 @@ void cargo::setCDT(Time t)
 	CDT = t;
 }
 
+void cargo::settruckid(int c)
+{
+	truckid = c;
+}
+
 void cargo::calcP() { p = Cost / (2*dist + LT); }
 
 Time cargo::getpt() { return PT; }
